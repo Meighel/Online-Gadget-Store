@@ -43,7 +43,7 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['user_role'])) {
         <li class="nav-item"><a class="nav-link" href="Public/about.php">About</a></li>
         <li class="nav-item"><a class="nav-link" href="Public/contact.php">Contact</a></li>
         <?php if (isset($_SESSION['user_id'])): ?>
-          <li class="nav-item"><a class="nav-link" href="User/user_dashboard.php">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="User/client_dashboard.php">Dashboard</a></li>
           <li class="nav-item"><a class="nav-link" href="User/cart.php">Cart</a></li>
         <?php else: ?>
           <li class="nav-item"><a class="nav-link" href="Public/login.php">Login</a></li>
