@@ -1,0 +1,17 @@
+.hero {
+    background: linear-gradient(120deg, #4b6cb7, #182848);
+    color: white;
+    padding: 80px 20px;
+    text-align: center;
+  }
+  .product-card {
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+  .product-card:hover {
+    transform: scale(1.02);
+  }
+  img {
+    height: 200px;
+    object-fit: cover;
+  }
