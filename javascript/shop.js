@@ -83,9 +83,41 @@ function searchProducts() {
     }
 }
 
-function addToCart(productId) {
-    alert(`Add product ${productId} to cart (implement this)`);
+async function addToCart(productId) {
+    try {
+        const response = await fetch(`/API/add_to_cart.php`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ product_id: productId, quantity: 1 }) // Default quantity to 1
+        });
+
+        if (!response.ok) throw new Error('Failed to add to cart');
+
+        const result = await response.json();
+        if (result.success) {
+            alert(`Product ${productId} added to cart!`);
+            updateCartCount(); // Update cart count
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
 }
+
+async function updateCartCount() {
+    try {
+        const response = await fetch(`/API/get_cart.php`);
+        const cart = await response.json();
+        const count = cart.items.reduce((total, item) => total + item.quantity, 0);
+        document.getElementById('cartCount').innerText = count;
+    } catch (error) {
+        console.error('Error fetching cart count:', error);
+    }
+}
+
 
 // Initial load
 fetchProducts('all');
