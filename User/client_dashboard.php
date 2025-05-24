@@ -29,20 +29,26 @@ $ordersResult = $stmt->get_result();
   <meta charset="UTF-8" />
   <title>Client Dashboard | TechNest</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style">
 </head>
 <body class="bg-light">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container">
-    <a class="navbar-brand" href="#">TechNest</a>
-    <div class="d-flex gap-2">
-      <a href="../Public/shop.php" class="btn text-white me-2">Shop</a>
-      <a href="cart.php" class="btn text-white me-2">Cart</a>
-      <a href="settings.php" class="btn text-white me-2">Settings</a>
-      <button class="btn btn-outline-light" id="logoutBtn">Logout</button>
-    </div>
-  </div>
-</nav>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+          <a class="navbar-brand" href="#">TechNest</a>
+          <div class="d-flex gap-2 align-items-center">
+              <a href="../Public/shop.php" class="nav-link text-white me-2">Shop</a>
+              <a class="nav-link position-relative text-white" href="../User/cart.php">
+                  <i class="fas fa-shopping-cart me-1"></i>
+                  <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" id="cartCount" style="font-size: 0.7rem;">0</span>
+              </a>
+              <a href="settings.php" class="nav-link text-white me-2">Settings</a>
+              <button class="btn btn-outline-light" id="logoutBtn">Logout</button>
+          </div>
+      </div>
+  </nav>
 
 <div class="container mt-5">
   <h1>Welcome, <?= htmlspecialchars($userName) ?>!</h1>
