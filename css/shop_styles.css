@@ -198,6 +198,18 @@ body {
     transition: background 0.3s ease;
 }
 
+/* Make entire card clickable without blue text/underline */
+a.product-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+a.product-link * {
+    text-decoration: none;
+    color: inherit;
+}
+
 .product-card button:hover {
     background: var(--dark-color);
 }
