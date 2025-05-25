@@ -48,7 +48,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
                 'description' => $row['description'],
                 'price' => $row['price'],
                 'image_url' => $row['image'],   // matches your JS
-                'category_name' => $row['category_name'] ?? 'Uncategorized',
+                'category_name' => $row['category_name'] ?? 'Uncategorized', // Ensure this is set correctly
                 'rating' => rand(3, 5),          // dummy rating for example
                 'badge' => ''                    // placeholder
             ];
@@ -107,21 +107,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
             </div>
         </div>
     </section>
-
-    <!-- Filter Section -->
-    <div class="container">
-        <div class="filter-section">
-            <h4 class="mb-3">Shop by Category</h4>
-            <div class="d-flex flex-wrap">
-                <button class="category-btn active" data-category="all">All Products</button>
-                <button class="category-btn" data-category="smartphones">Smartphones</button>
-                <button class="category-btn" data-category="laptops">Laptops</button>
-                <button class="category-btn" data-category="headphones">Headphones</button>
-                <button class="category-btn" data-category="watches">Smart Watches</button>
-                <button class="category-btn" data-category="accessories">Accessories</button>
-            </div>
-        </div>
-    </div>
 
     <div class="container" id="products">
         <div id="loadingSpinner" class="loading" style="display: none;">

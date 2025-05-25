@@ -56,20 +56,6 @@ function renderProducts(products) {
     `).join('');
 }
 
-// Use data-category attribute instead of textContent
-categoryButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        categoryButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        const category = btn.dataset.category;
-        if (category === 'all') {
-            fetchProducts('all');
-        } else {
-            fetchProducts('category', category);
-        }
-    });
-});
 
 function searchProducts() {
     const term = searchInput.value.trim();
@@ -107,6 +93,7 @@ async function addToCart(productId) {
     }
 }
 
+// Update function for Cart (NOT WORKING YET)
 async function updateCartCount() {
     try {
         const response = await fetch(`/API/get_cart.php`);
