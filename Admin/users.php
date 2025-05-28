@@ -65,12 +65,12 @@
                     <span>Product Management</span>
                 </a>
                 
-                <a href="categories.php" class="sidebar-item active">
+                <a href="categories.php" class="sidebar-item">
                     <i class="fas fa-tags"></i>
                     <span>Category Management</span>
                 </a>
                 
-                <a href="users.php" class="sidebar-item">
+                <a href="users.php" class="sidebar-item active">
                     <i class="fas fa-users"></i>
                     <span>User Management</span>
                 </a>
