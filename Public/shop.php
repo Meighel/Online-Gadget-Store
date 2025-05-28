@@ -31,7 +31,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
                 LEFT JOIN Categories c ON p.category_id = c.id
                 WHERE p.name LIKE ? OR p.description LIKE ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param('ss', $term, $term);
+        $stmt->bind_param('ss', $term, vars: $term);
     }
     else {
         echo json_encode([]);
@@ -69,7 +69,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
     <title>TechNest - Gadgets Shop</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/shop_styles.css">
+    <link rel="stylesheet" href="../css/shop_styles.css">
 </head>
 <body>
 
@@ -148,7 +148,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
       window.location.href = '../Public/login.php';
     });
 
-    fetch('/API/get_cart_count.php')
+    fetch('../API/get_cart_count.php')
       .then(res => res.json())
       .then(data => {
         document.getElementById('cartCount').innerText = data.count || 0;
