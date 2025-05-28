@@ -3,560 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SB Admin Dashboard</title>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="../css/admin_dashboard.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fc;
-            overflow-x: hidden;
-        }
-
-        /* Header Styles */
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem 2rem;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .logo i {
-            margin-right: 0.5rem;
-            background: rgba(255,255,255,0.2);
-            padding: 0.5rem;
-            border-radius: 50%;
-        }
-
-        .search-container {
-            flex: 1;
-            max-width: 400px;
-            margin: 0 2rem;
-            position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 0.75rem 1rem 0.75rem 3rem;
-            border: none;
-            border-radius: 25px;
-            background: rgba(255,255,255,0.9);
-            font-size: 0.9rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-input:focus {
-            background: white;
-            box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #667eea;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .notification-badge {
-            position: relative;
-            padding: 0.5rem;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .notification-badge:hover {
-            background: rgba(255,255,255,0.2);
-            transform: scale(1.1);
-        }
-
-        .badge-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ff4757;
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-        }
-
-        .user-profile:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
-        .user-avatar {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #ff6b6b, #feca57);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 80px;
-            bottom: 0;
-            width: 250px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem 0;
-            overflow-y: auto;
-            z-index: 999;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        }
-
-        .sidebar-section {
-            margin-bottom: 2rem;
-        }
-
-        .sidebar-title {
-            padding: 0 1.5rem;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: rgba(255,255,255,0.7);
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-left: 3px solid transparent;
-            cursor: pointer;
-        }
-
-        .sidebar-item:hover, .sidebar-item.active {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border-left-color: #feca57;
-            transform: translateX(5px);
-        }
-
-        .sidebar-item i {
-            margin-right: 1rem;
-            width: 20px;
-            text-align: center;
-        }
-
-        .sidebar-expandable {
-            position: relative;
-        }
-
-        .sidebar-expandable::after {
-            content: '\f107';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            right: 1.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar-expandable.expanded::after {
-            transform: rotate(180deg);
-        }
-
-        .sidebar-submenu {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-            background: rgba(0,0,0,0.1);
-        }
-
-        .sidebar-submenu.expanded {
-            max-height: 200px;
-        }
-
-        .sidebar-submenu .sidebar-item {
-            padding-left: 3.5rem;
-            font-size: 0.9rem;
-        }
-
-        .sidebar-footer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 1rem;
-            background: rgba(0,0,0,0.2);
-            text-align: center;
-        }
-
-        .upgrade-btn {
-            background: linear-gradient(45deg, #ff6b6b, #feca57);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .upgrade-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: 250px;
-            margin-top: 80px;
-            padding: 2rem;
-            min-height: calc(100vh - 80px);
-        }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .dashboard-title {
-            font-size: 2rem;
-            color: #2c3e50;
-            font-weight: 300;
-        }
-
-        .generate-report-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .generate-report-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            border-left: 4px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-
-        .stat-card.earnings-monthly {
-            border-left-color: #667eea;
-        }
-
-        .stat-card.earnings-annual {
-            border-left-color: #2ed573;
-        }
-
-        .stat-card.tasks {
-            border-left-color: #1e90ff;
-        }
-
-        .stat-card.pending {
-            border-left-color: #ffa502;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #7f8c8d;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-icon {
-            float: right;
-            font-size: 2rem;
-            color: #ecf0f1;
-            margin-top: -1rem;
-        }
-
-        .progress-bar {
-            background: #ecf0f1;
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 1rem;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #1e90ff, #00bfff);
-            width: 50%;
-            border-radius: 4px;
-            animation: progressAnimation 2s ease-in-out;
-        }
-
-        @keyframes progressAnimation {
-            from { width: 0; }
-            to { width: 50%; }
-        }
-
-        /* Charts Section */
-        .charts-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .chart-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
-
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .chart-title {
-            font-size: 1.2rem;
-            color: #2c3e50;
-            font-weight: 600;
-        }
-
-        .chart-menu {
-            color: #7f8c8d;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .chart-menu:hover {
-            background: #ecf0f1;
-            color: #2c3e50;
-        }
-
-        /* Line Chart */
-        .line-chart {
-            height: 300px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .chart-canvas {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-
-        .chart-line {
-            stroke: #667eea;
-            stroke-width: 3;
-            fill: none;
-            filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3));
-        }
-
-        .chart-area {
-            fill: url(#gradient);
-            opacity: 0.1;
-        }
-
-        .chart-point {
-            fill: #667eea;
-            stroke: white;
-            stroke-width: 3;
-            r: 5;
-            transition: all 0.3s ease;
-        }
-
-        .chart-point:hover {
-            r: 8;
-            filter: drop-shadow(0 2px 8px rgba(102, 126, 234, 0.5));
-        }
-
-        /* Donut Chart */
-        .donut-chart {
-            height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-
-        .donut-svg {
-            width: 200px;
-            height: 200px;
-        }
-
-        .donut-segment {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .donut-segment:hover {
-            transform: scale(1.05);
-            filter: brightness(1.1);
-        }
-
-        .chart-legend {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-            color: #7f8c8d;
-        }
-
-        .legend-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        /* Footer */
-        .footer {
-            background: white;
-            padding: 1.5rem 2rem;
-            margin-left: 250px;
-            margin-top: 2rem;
-            border-top: 1px solid #ecf0f1;
-            color: #7f8c8d;
-            text-align: center;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-
-            .sidebar.mobile-open {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            .footer {
-                margin-left: 0;
-            }
-
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Loading Animation */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
 </head>
 <body>
     <!-- Header -->
@@ -564,7 +13,7 @@
         <div class="header-content">
             <div class="logo">
                 <i class="fas fa-tachometer-alt"></i>
-                SB ADMIN
+                TechNest Admin
             </div>
             
             <div class="search-container">
@@ -592,70 +41,55 @@
     </header>
 
     <!-- Sidebar -->
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-section">
-            <div class="sidebar-item active">
-                <i class="fas fa-tachometer-alt"></i>
-                <span>Dashboard</span>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-content">
+            <div class="sidebar-section">
+                <div class="sidebar-item <?php echo ($current_page == 'admin_dashboard' || $current_page == 'index') ? 'active' : ''; ?>">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Management</div>
+                
+                <!-- Product Management -->
+                <a href="admin/products.php" class="sidebar-item <?php echo ($current_page == 'products') ? 'active' : ''; ?>">
+                    <i class="fas fa-box"></i>
+                    <span>Product Management</span>
+                </a>
+                
+                <!-- Category Management -->
+                <a href="admin/categories.php" class="sidebar-item <?php echo ($current_page == 'categories') ? 'active' : ''; ?>">
+                    <i class="fas fa-tags"></i>
+                    <span>Category Management</span>
+                </a>
+                
+                <!-- User Management -->
+                <a href="admin/users/list.php" class="sidebar-item <?php echo ($current_page == 'users-list') ? 'active' : ''; ?>">
+                    <i class="fas fa-users"></i>
+                    <span>User Management</span>
+                </a>
+                
+                <!-- Inventory Management -->
+                <a href="admin/inventory.php" class="sidebar-item <?php echo ($current_page == 'inventory') ? 'active' : ''; ?>">
+                    <i class="fas fa-warehouse"></i>
+                    <span>Inventory Management</span>
+                </a>
             </div>
         </div>
 
-        <div class="sidebar-section">
-            <div class="sidebar-title">Interface</div>
-            
-            <div class="sidebar-item sidebar-expandable" onclick="toggleSubmenu(this)">
-                <i class="fas fa-puzzle-piece"></i>
-                <span>Components</span>
-            </div>
-            <div class="sidebar-submenu">
-                <a href="#" class="sidebar-item">Buttons</a>
-                <a href="#" class="sidebar-item">Cards</a>
-                <a href="#" class="sidebar-item">Forms</a>
-            </div>
-            
-            <div class="sidebar-item sidebar-expandable" onclick="toggleSubmenu(this)">
-                <i class="fas fa-wrench"></i>
-                <span>Utilities</span>
-            </div>
-            <div class="sidebar-submenu">
-                <a href="#" class="sidebar-item">Colors</a>
-                <a href="#" class="sidebar-item">Borders</a>
-                <a href="#" class="sidebar-item">Animations</a>
-            </div>
-        </div>
-
-        <div class="sidebar-section">
-            <div class="sidebar-title">Addons</div>
-            
-            <div class="sidebar-item sidebar-expandable" onclick="toggleSubmenu(this)">
-                <i class="fas fa-folder"></i>
-                <span>Pages</span>
-            </div>
-            <div class="sidebar-submenu">
-                <a href="#" class="sidebar-item">Login</a>
-                <a href="#" class="sidebar-item">Register</a>
-                <a href="#" class="sidebar-item">Forgot Password</a>
-            </div>
-            
-            <div class="sidebar-item">
-                <i class="fas fa-chart-area"></i>
-                <span>Charts</span>
-            </div>
-            
-            <div class="sidebar-item">
-                <i class="fas fa-table"></i>
-                <span>Tables</span>
-            </div>
-        </div>
-
+        <!-- Sidebar Footer -->
         <div class="sidebar-footer">
-            <i class="fas fa-rocket" style="font-size: 2rem; margin-bottom: 1rem; color: #feca57;"></i>
-            <p style="margin-bottom: 1rem; font-size: 0.9rem; opacity: 0.8;">
-                SB Admin Pro is packed with premium features, components, and more!
-            </p>
-            <a href="#" class="upgrade-btn">Upgrade to Pro!</a>
+            <div class="sidebar-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </div>
         </div>
-    </nav>
+    </aside>
+
+
+
 
     <!-- Main Content -->
     <main class="main-content">
@@ -767,77 +201,73 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <p>&copy; 2025 SB Admin Dashboard. Built with modern web technologies.</p>
+        <p>&copy; 2025 TechNest Admin Dashboard.</p>
     </footer>
 
     <script>
-        // Sidebar functionality
-        function toggleSubmenu(element) {
-            const submenu = element.nextElementSibling;
-            const isExpanded = element.classList.contains('expanded');
+            // Sidebar functionality
+    function toggleSubmenu(element) {
+        const submenu = element.nextElementSibling;
+        const isExpanded = element.classList.contains('expanded');
+        
+        // Close all other submenus
+        document.querySelectorAll('.sidebar-expandable.expanded').forEach(item => {
+            if (item !== element) {
+                item.classList.remove('expanded');
+                item.nextElementSibling.classList.remove('expanded');
+            }
+        });
+        
+        // Toggle current submenu
+        if (isExpanded) {
+            element.classList.remove('expanded');
+            submenu.classList.remove('expanded');
+        } else {
+            element.classList.add('expanded');
+            submenu.classList.add('expanded');
+        }
+    }
+
+    // Mobile sidebar toggle (for responsive design)
+    function toggleMobileSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+            sidebar.classList.toggle('mobile-open');
             
-            // Close all other submenus
-            document.querySelectorAll('.sidebar-expandable.expanded').forEach(item => {
-                if (item !== element) {
-                    item.classList.remove('expanded');
-                    item.nextElementSibling.classList.remove('expanded');
-                }
-            });
-            
-            // Toggle current submenu
-            if (isExpanded) {
-                element.classList.remove('expanded');
-                submenu.classList.remove('expanded');
+            // Add/remove body scroll lock on mobile
+            if (sidebar.classList.contains('mobile-open')) {
+                document.body.style.overflow = 'hidden';
             } else {
-                element.classList.add('expanded');
-                submenu.classList.add('expanded');
+                document.body.style.overflow = '';
+            }
+        } else {
+            console.warn('Sidebar element not found');
+        }
+    }
+
+    // Close mobile sidebar when clicking outside
+    function closeMobileSidebarOnOutsideClick(event) {
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        
+        if (sidebar && sidebar.classList.contains('mobile-open')) {
+            if (!sidebar.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+                sidebar.classList.remove('mobile-open');
+                document.body.style.overflow = '';
             }
         }
+    }
 
-        // Chart interactions
-        document.querySelectorAll('.chart-point').forEach(point => {
-            point.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.5)';
-            });
-            
-            point.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(1)';
-            });
-        });
-
-        // Search functionality
-        document.querySelector('.search-input').addEventListener('focus', function() {
-            this.parentElement.style.transform = 'scale(1.02)';
-        });
-
-        document.querySelector('.search-input').addEventListener('blur', function() {
-            this.parentElement.style.transform = 'scale(1)';
-        });
-
-        // Generate report button animation
-        document.querySelector('.generate-report-btn').addEventListener('click', function() {
-            const originalText = this.innerHTML;
-            this.innerHTML = '<div class="loading"></div> Generating...';
-            this.disabled = true;
-            
-            setTimeout(() => {
-                this.innerHTML = '<i class="fas fa-check"></i> Report Generated!';
-                setTimeout(() => {
-                    this.innerHTML = originalText;
-                    this.disabled = false;
-                }, 1500);
-            }, 2000);
-        });
-
-        // Mobile sidebar toggle (for responsive design)
-        function toggleMobileSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('mobile-open');
+    // Add mobile menu button
+    function addMobileMenuButton() {
+        // Check if button already exists
+        if (document.querySelector('.mobile-menu-btn')) {
+            return;
         }
-
-        // Add mobile menu button if needed
+        
         if (window.innerWidth <= 768) {
             const mobileMenuBtn = document.createElement('button');
+            mobileMenuBtn.className = 'mobile-menu-btn';
             mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
             mobileMenuBtn.style.cssText = `
                 position: fixed;
@@ -850,24 +280,100 @@
                 padding: 0.75rem;
                 border-radius: 50%;
                 cursor: pointer;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                transition: all 0.3s ease;
+                backdrop-filter: blur(10px);
             `;
+            
             mobileMenuBtn.onclick = toggleMobileSidebar;
+            
+            // Add hover effect
+            mobileMenuBtn.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1)';
+                this.style.background = 'rgba(102, 126, 234, 1)';
+            });
+            
+            mobileMenuBtn.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.background = 'rgba(102, 126, 234, 0.9)';
+            });
+            
             document.body.appendChild(mobileMenuBtn);
+            
+            // Add click outside listener for mobile
+            document.addEventListener('click', closeMobileSidebarOnOutsideClick);
+        } else {
+            // Remove mobile menu button on larger screens
+            const existingBtn = document.querySelector('.mobile-menu-btn');
+            if (existingBtn) {
+                existingBtn.remove();
+            }
+            
+            // Remove click outside listener
+            document.removeEventListener('click', closeMobileSidebarOnOutsideClick);
+        }
+    }
+
+    // Chart interactions
+    document.addEventListener('DOMContentLoaded', function() {
+        // Chart point interactions
+        document.querySelectorAll('.chart-point').forEach(point => {
+            point.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.5)';
+                this.style.transition = 'transform 0.2s ease';
+            });
+            
+            point.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        if (searchInput) {
+            searchInput.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.style.transition = 'transform 0.2s ease';
+            });
+
+            searchInput.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        }
+
+        // Generate report button animation
+        const generateBtn = document.querySelector('.generate-report-btn');
+        if (generateBtn) {
+            generateBtn.addEventListener('click', function() {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<div class="loading-spinner"></div> Generating...';
+                this.disabled = true;
+                this.style.opacity = '0.7';
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-check"></i> Report Generated!';
+                    this.style.background = '#2ed573';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                        this.style.opacity = '1';
+                        this.style.background = '';
+                    }, 1500);
+                }, 2000);
+            });
         }
 
         // Animate stats on load
-        window.addEventListener('load', function() {
-            const statValues = document.querySelectorAll('.stat-value');
-            statValues.forEach((stat, index) => {
-                stat.style.opacity = '0';
-                stat.style.transform = 'translateY(20px)';
-                
-                setTimeout(() => {
-                    stat.style.transition = 'all 0.6s ease';
-                    stat.style.opacity = '1';
-                    stat.style.transform = 'translateY(0)';
-                }, index * 200);
-            });
+        const statValues = document.querySelectorAll('.stat-value');
+        statValues.forEach((stat, index) => {
+            stat.style.opacity = '0';
+            stat.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                stat.style.transition = 'all 0.6s ease';
+                stat.style.opacity = '1';
+                stat.style.transform = 'translateY(0)';
+            }, index * 200);
         });
 
         // Notification interactions
@@ -882,6 +388,43 @@
                 }
             });
         });
+
+        // Initialize mobile functionality
+        addMobileMenuButton();
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        addMobileMenuButton();
+        
+        // Close mobile sidebar if window becomes large
+        if (window.innerWidth > 768) {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar && sidebar.classList.contains('mobile-open')) {
+                sidebar.classList.remove('mobile-open');
+                document.body.style.overflow = '';
+            }
+        }
+    });
+
+    // Add loading spinner styles
+    const loadingSpinnerStyle = document.createElement('style');
+    loadingSpinnerStyle.textContent = `
+        .loading-spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(loadingSpinnerStyle);
     </script>
 </body>
 </html>
