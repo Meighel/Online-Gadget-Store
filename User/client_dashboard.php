@@ -34,11 +34,12 @@ $productResult = $conn->query($productSql);
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/shop_styles.css">
+  <link rel="stylesheet" href="/css/shop_styles.css">
+  <link rel="stylesheet" href="/css/client_dashboard.css">
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand">
         <div class="container">
             <a class="navbar-brand" href="../index.php">TechNest</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -58,7 +59,10 @@ $productResult = $conn->query($productSql);
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="settings.php" class="nav-link text-white">Orders</a>
+                    <a href="my_orders.php" class="nav-link text-white">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a href="account_settings.php" class="nav-link text-white">Settings</a>
                 </li>
                 <li class="nav-item">
                     <button class="btn btn-outline-light" id="logoutBtn">Logout</button>
@@ -68,11 +72,14 @@ $productResult = $conn->query($productSql);
         </div>
     </nav>
 
-  <div class="container mt-5">
-    <h1>Welcome, <?= htmlspecialchars($userName) ?>!</h1>
-    <p><strong>Email:</strong> <?= htmlspecialchars($userEmail) ?></p>
-    <p><strong>Role:</strong> <?= htmlspecialchars($userRole) ?></p>
-    <p><strong>Joined:</strong> <?= date('F d, Y', strtotime($userCreatedAt)) ?></p>
+    <div class="welcome-section">
+        <h1>Welcome, <?= htmlspecialchars($userName) ?>!</h1>
+        <div class="user-info">
+            <p><span>Email:</span> <?= htmlspecialchars($userEmail) ?></p>
+            <p><span>Role:</span> <?= htmlspecialchars($userRole) ?></p>
+            <p><span>Joined:</span> <?= date('F d, Y', strtotime($userCreatedAt)) ?></p>
+        </div>
+    </div>
     <hr>
 
     <h3>Your Recent Orders</h3>
@@ -115,7 +122,7 @@ $productResult = $conn->query($productSql);
                 <h5 class="card-title"><?= htmlspecialchars($product['name']) ?></h5>
                 <p class="card-text"><?= htmlspecialchars($product['description']) ?></p>
                 <p class="text-primary fw-bold">₱<?= number_format($product['price'], 2) ?></p>
-                <button class="btn btn-sm btn-outline-primary">Add to Cart</button>
+                <button class="btn btn-primary" onclick="addToCart(<?= $product['id'] ?>)">Add to Cart</button>
               </div>
             </div>
           </div>
@@ -130,6 +137,24 @@ $productResult = $conn->query($productSql);
   </div>
 
   <script>
+  async function addToCart(productId) {
+    try {
+      const response = await fetch(`../API/add_to_cart.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product_id: productId, quantity: 1 })
+      });
+
+      const result = await response.json();
+        if (result.success) {
+          alert("Product added to cart!");
+        } else {
+          alert(result.message);
+        }
+        } catch (err) {
+          alert("Error: " + err.message);
+        }
+      }
   document.getElementById('logoutBtn').addEventListener('click', async () => {
     await fetch('../API/logout.php', { method: 'POST' });
     window.location.href = '../Public/login.php';

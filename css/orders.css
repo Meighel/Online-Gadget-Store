@@ -1,0 +1,505 @@
+:root {
+    --primary-color: #6c5ce7;
+    --secondary-color: #a29bfe;
+    --accent-color: #fd79a8;
+    --dark-color: #2d3436;
+    --light-color: #ddd6fe;
+    --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    --gradient-accent: linear-gradient(135deg, var(--accent-color), #ff6b9d);
+    --card-shadow: 0 10px 30px rgba(108, 92, 231, 0.1);
+    --hover-shadow: 0 20px 40px rgba(108, 92, 231, 0.2);
+    --border-radius: 15px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --success-color: #00b894;
+    --warning-color: #fdcb6e;
+    --danger-color: #e74c3c;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #f8f9ff 0%, var(--light-color) 100%) !important;
+    color: var(--dark-color);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* Enhanced Navbar */
+.navbar {
+    background: var(--gradient-primary) !important;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(108, 92, 231, 0.15);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    font-weight: 800;
+    font-size: 1.8rem;
+    color: white !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    letter-spacing: -0.5px;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9) !important;
+    transition: var(--transition);
+    padding: 0.7rem 1.2rem !important;
+    border-radius: 10px;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.btn-outline-light {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-weight: 600;
+    padding: 0.6rem 1.5rem;
+    border-radius: 12px;
+    transition: var(--transition);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.btn-outline-light:hover {
+    background: white;
+    color: var(--primary-color);
+    border-color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
+}
+
+/* Cart Badge */
+.badge {
+    background: var(--accent-color) !important;
+    font-size: 0.7rem !important;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(253, 121, 168, 0.4);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Main Container */
+.container.py-5 {
+    max-width: 1200px;
+    padding: 4rem 1rem !important;
+}
+
+/* Section Headers */
+h2 {
+    color: var(--dark-color);
+    font-weight: 800;
+    font-size: 2.2rem;
+    margin-bottom: 2rem !important;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 100%;
+    background: var(--gradient-primary);
+    border-radius: 3px;
+}
+
+h2.mt-5 {
+    margin-top: 4rem !important;
+    padding-top: 2rem;
+    border-top: 2px solid rgba(108, 92, 231, 0.1);
+}
+
+/* Enhanced Cards */
+.card {
+    border: none !important;
+    border-radius: var(--border-radius) !important;
+    box-shadow: var(--card-shadow) !important;
+    transition: var(--transition);
+    background: white;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-primary);
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--hover-shadow) !important;
+}
+
+.card-body {
+    padding: 2rem !important;
+    position: relative;
+}
+
+/* Card Titles */
+.card-title {
+    font-weight: 700 !important;
+    color: var(--dark-color);
+    margin-bottom: 1.5rem !important;
+    font-size: 1.3rem;
+    position: relative;
+}
+
+.card-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--gradient-accent);
+    border-radius: 1px;
+}
+
+/* Card Text */
+.card-text {
+    color: #6b7280;
+    margin-bottom: 1rem !important;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.card-text strong {
+    color: var(--dark-color);
+    font-weight: 700;
+}
+
+/* Price Styling */
+.card-text:first-of-type strong:last-child {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+/* Status Badges */
+.text-warning {
+    color: var(--warning-color) !important;
+    background: rgba(253, 203, 110, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-weight: 700 !important;
+    font-size: 0.9rem;
+    display: inline-block;
+    border: 2px solid rgba(253, 203, 110, 0.3);
+    position: relative;
+}
+
+.text-warning::before {
+    content: '⏳';
+    margin-right: 0.5rem;
+}
+
+.text-success {
+    color: var(--success-color) !important;
+    background: rgba(0, 184, 148, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-weight: 700 !important;
+    font-size: 0.9rem;
+    display: inline-block;
+    border: 2px solid rgba(0, 184, 148, 0.3);
+}
+
+.text-success::before {
+    content: '✅';
+    margin-right: 0.5rem;
+}
+
+/* Ongoing Orders Cards */
+.card.shadow-sm:not(.border-success) {
+    position: relative;
+}
+
+.card.shadow-sm:not(.border-success)::before {
+    background: var(--gradient-accent);
+}
+
+.card.shadow-sm:not(.border-success):hover {
+    box-shadow: 0 20px 40px rgba(253, 121, 168, 0.2) !important;
+}
+
+/* Processed Orders Cards */
+.card.border-success {
+    border: none !important;
+}
+
+.card.border-success::before {
+    background: linear-gradient(135deg, var(--success-color), #00a085);
+}
+
+.card.border-success:hover {
+    box-shadow: 0 20px 40px rgba(0, 184, 148, 0.2) !important;
+}
+
+/* Empty State Messages */
+.container p:not(.card-text):not(.text-warning):not(.text-success) {
+    text-align: center;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 3rem;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    margin: 2rem 0;
+    font-size: 1.1rem;
+    position: relative;
+}
+
+.container p:not(.card-text):not(.text-warning):not(.text-success)::before {
+    content: '📦';
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Row and Column Enhancements */
+.row {
+    margin: 0 -15px;
+}
+
+.col-md-6 {
+    padding: 0 15px;
+}
+
+/* Loading Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container > * {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.card {
+    animation-delay: 0.1s;
+}
+
+.card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+/* Order Statistics */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    text-align: center;
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--hover-shadow);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    display: block;
+}
+
+.stat-label {
+    color: #6b7280;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container.py-5 {
+        padding: 2rem 1rem !important;
+    }
+    
+    h2 {
+        font-size: 1.8rem;
+        padding-left: 1rem;
+    }
+    
+    h2::before {
+        width: 4px;
+    }
+    
+    .navbar-brand {
+        font-size: 1.5rem;
+    }
+    
+    .card-body {
+        padding: 1.5rem !important;
+    }
+    
+    .card-title {
+        font-size: 1.2rem;
+    }
+    
+    .text-warning,
+    .text-success {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .col-md-6 {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    h2 {
+        font-size: 1.6rem;
+    }
+    
+    .nav-link {
+        padding: 0.5rem 1rem !important;
+    }
+    
+    .btn-outline-light {
+        padding: 0.5rem 1rem;
+    }
+    
+    .card-body {
+        padding: 1rem !important;
+    }
+    
+    .container p:not(.card-text):not(.text-warning):not(.text-success) {
+        padding: 2rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .container.py-5 {
+        padding: 1.5rem 0.5rem !important;
+    }
+}
+
+/* Order Detail Hover Effects */
+.card:hover .card-title {
+    color: var(--primary-color);
+    transform: translateX(5px);
+}
+
+.card:hover .text-warning {
+    animation: bounce 0.6s ease-in-out;
+}
+
+.card:hover .text-success {
+    animation: checkmark 0.6s ease-in-out;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-3px);
+    }
+    60% {
+        transform: translateY(-2px);
+    }
+}
+
+@keyframes checkmark {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Accessibility Improvements */
+.nav-link:focus,
+.btn:focus {
+    outline: 3px solid rgba(108, 92, 231, 0.5);
+    outline-offset: 2px;
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Print Styles */
+@media print {
+    .navbar,
+    .btn {
+        display: none !important;
+    }
+    
+    .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+    }
+    
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        break-inside: avoid;
+    }
+    
+    h2 {
+        color: black !important;
+    }
+    
+    .text-warning,
+    .text-success {
+        background: none !important;
+        border: 1px solid #ddd !important;
+        color: black !important;
+    }
+}
