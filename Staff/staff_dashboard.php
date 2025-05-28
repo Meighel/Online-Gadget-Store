@@ -83,7 +83,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'staff') {
 
         <!-- Sidebar Footer -->
         <div class="sidebar-footer">
-            <div class="sidebar-item"  id="logoutBtn" onclick="logout()">
+            <div class="sidebar-item"  id="logoutBtn">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </div>

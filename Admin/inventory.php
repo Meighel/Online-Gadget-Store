@@ -23,10 +23,6 @@
                 <i class="fas fa-tachometer-alt"></i>
                 TechNest Admin
             </div>
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search for...">
-            </div>
             <div class="header-actions">
                 <div class="notification-badge">
                     <i class="fas fa-bell"></i>
@@ -37,7 +33,7 @@
                     <span class="badge-count">7</span>
                 </div>
                 <div class="user-profile">
-                    <span id="user-name">Admin User</span>
+                    <span id="user-name">Loading...</span>
                 </div>
             </div>
         </div>

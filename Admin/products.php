@@ -1,3 +1,18 @@
+<?php
+session_start();
+require '../db.php';
+
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+    header("Location: ../Public/login.php");
+    exit;
+}
+
+// Fetch products
+$result = $conn->query("SELECT * FROM Products");
+$products = $result->fetch_all(MYSQLI_ASSOC);
+$current_page = 'products';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,10 +25,19 @@
     <link rel="stylesheet" href="../assets/css/admin-products.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
-    <!-- JavaScript Files -->
+    <!-- JavaScript Files
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="../assets/javascript/products-list.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> -->
+    <script>
+        fetch('../API/fetch_user_name.php')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('user-name').textContent = data.name;
+            })
+            .catch(err => {
+                console.error('Error fetching name:', err);
+            });
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -22,11 +46,6 @@
             <div class="logo">
                 <i class="fas fa-tachometer-alt"></i>
                 TechNest Admin
-            </div>
-            
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search for...">
             </div>
             
             <div class="header-actions">
@@ -41,7 +60,7 @@
                 </div>
                 
                 <div class="user-profile">
-                    <span id="user-name">Admin User</span>
+                    <span id="user-name">Loading...</span>
                 </div>
             </div>
         </div>
@@ -94,82 +113,169 @@
     <main class="main-content">
         <div class="page-header">
             <h1 class="page-title">Product Management</h1>
+            <p class="page-subtitle">Manage your product inventory with ease</p>
         </div>
 
-        <div class="table-container">
-            <div class="table-header">
-                <h2 class="table-title">Product Management</h2>
-                <button class="add-btn" onclick="openAddModal()">
-                    <i class="fas fa-plus"></i>
-                    Add Product
-                </button>
+        <!-- Stats Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon products">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-info">
+                    <h4><?= count($products) ?></h4>
+                    <p>Total Products</p>
+                </div>
             </div>
             
-            <div id="table-content">
-                <div class="loading-state">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    <h3>Loading Products...</h3>
-                    <p>Please wait while we fetch your products from the database.</p>
+            <div class="stat-card">
+                <div class="stat-icon stock">
+                    <i class="fas fa-cubes"></i>
+                </div>
+                <div class="stat-info">
+                    <h4><?= array_sum(array_column($products, 'stocks')) ?></h4>
+                    <p>Total Stock</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon value">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>$<?= number_format(array_sum(array_map(function($p) { return $p['price'] * $p['stocks']; }, $products)), 2) ?></h4>
+                    <p>Total Value</p>
                 </div>
             </div>
         </div>
+
+        <!-- Add Product Section -->
+        <div class="add-product-section">
+            <h3 class="section-title">
+                <i class="fas fa-plus-circle"></i>
+                Add New Product
+            </h3>
+            <form action="../API/admin_crud_products.php" method="POST" id="addProductForm">
+                <input type="hidden" name="action" value="create">
+                <div class="form-row">
+                    <div class="col">
+                        <label for="name" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #4a5568;">Product Name</label>
+                        <input name="name" id="name" class="form-control" placeholder="Enter product name" required>
+                    </div>
+                    <div class="col">
+                        <label for="price" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #4a5568;">Price</label>
+                        <input name="price" id="price" class="form-control" type="number" step="0.01" placeholder="0.00" required>
+                    </div>
+                    <div class="col">
+                        <label for="stocks" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #4a5568;">Stock</label>
+                        <input name="stocks" id="stocks" class="form-control" type="number" placeholder="0" required>
+                    </div>
+                    <div class="col">
+                        <label for="image" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #4a5568;">Image URL</label>
+                        <input name="image" id="image" class="form-control" type="text" placeholder="https://...">
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-success" type="submit">
+                            <i class="fas fa-plus"></i>
+                            Add Product
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Product Table Section -->
+        <div class="table-section">
+            <div class="table-header">
+                <h3>
+                    <i class="fas fa-list"></i>
+                    Product Inventory
+                </h3>
+            </div>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Image URL</th>
+                        <th>Preview</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($products as $product): ?>
+                        <tr>
+                            <form action="../API/admin_crud_products.php" method="POST" class="product-form">
+                                <input type="hidden" name="id" value="<?= $product['id'] ?>">
+                                <input type="hidden" name="action" value="update">
+                                <td><strong><?= $product['id'] ?></strong></td>
+                                <td><input name="name" value="<?= htmlspecialchars($product['name']) ?>" class="form-control" required></td>
+                                <td><input name="price" type="number" step="0.01" value="<?= $product['price'] ?>" class="form-control" required></td>
+                                <td><input name="stocks" type="number" value="<?= $product['stocks'] ?>" class="form-control" required></td>
+                                <td><input name="image" type="text" value="<?= htmlspecialchars($product['image']) ?>" class="form-control"></td>
+                                <td>
+                                    <?php if (!empty($product['image'])): ?>
+                                        <img src="<?= htmlspecialchars($product['image']) ?>" alt="Product Image" width="60" height="60" class="product-image">
+                                    <?php else: ?>
+                                        <div style="width: 60px; height: 60px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #a0aec0;">
+                                            <i class="fas fa-image"></i>
+                                        </div>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" type="submit">
+                                        <i class="fas fa-save"></i>
+                                        Update
+                                    </button>
+                                    <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this product?');">
+                                        <i class="fas fa-trash"></i>
+                                        Delete
+                                    </button>
+                                </td>
+                            </form>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </main>
 
-    <!-- Add/Edit Product Modal -->
-    <div id="productModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">Add Product</h3>
-                <button class="close" onclick="closeModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="productForm">
-                    <input type="hidden" id="productId" name="id">
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="productName">Product Name</label>
-                        <input type="text" id="productName" name="name" class="form-input" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="productDescription">Description</label>
-                        <textarea id="productDescription" name="description" class="form-input form-textarea" required></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="productPrice">Price ($)</label>
-                        <input type="number" id="productPrice" name="price" class="form-input" step="0.01" min="0" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="productImage">Image URL</label>
-                        <input type="url" id="productImage" name="image_url" class="form-input" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
-                <button class="btn-primary" onclick="saveProduct()">Save Product</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2025 TechNest Admin Dashboard.</p>
-    </footer>
+    <!-- Script -->
+    <!--<script src="../assets/javascript/products-list.js"></script>-->
     <script>
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             await fetch('../API/logout.php', { method: 'POST' });
             window.location.href = '../Public/login.php';
-            });
+        });
 
-            fetch('/API/get_cart_count.php')
+        fetch('/API/get_cart_count.php')
             .then(res => res.json())
             .then(data => {
-                document.getElementById('cartCount').innerText = data.count || 0;
-        })
-        .catch(err => console.error('Failed to fetch cart count:', err));
+                const cartCount = document.getElementById('cartCount');
+                if (cartCount) cartCount.innerText = data.count || 0;
+            })
+            .catch(err => console.error('Failed to fetch cart count:', err));
+
+        // Enhanced form handling
+        document.getElementById('addProductForm').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+        });
+
+        // Enhanced product form handling
+        document.querySelectorAll('.product-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (e.submitter.value === 'update') {
+                    const submitBtn = e.submitter;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+                }
+            });
+        });
     </script>
 </body>
 </html>

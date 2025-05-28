@@ -14,6 +14,16 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="../assets/javascript/users-list.js"></script>
+    <script>
+        fetch('../API/fetch_user_name.php')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('user-name').textContent = data.name;
+            })
+            .catch(err => {
+                console.error('Error fetching name:', err);
+            });
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -22,11 +32,6 @@
             <div class="logo">
                 <i class="fas fa-tachometer-alt"></i>
                 TechNest
-            </div>
-            
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search for...">
             </div>
             
             <div class="header-actions">
@@ -41,7 +46,7 @@
                 </div>
                 
                 <div class="user-profile">
-                    <span id="user-name">Admin</span>
+                    <span id="user-name">Loading...</span>
                 </div>
             </div>
         </div>
