@@ -15,14 +15,24 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="../assets/javascript/categories-list.js"></script>
     <script>
-        fetch('../API/fetch_user_name.php')
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('user-name').textContent = data.name;
-            })
-            .catch(err => {
-                console.error('Error fetching name:', err);
-            });
+    fetch('../API/fetch_user_name.php')
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                console.error(data.error);
+                return;
+            }
+            document.getElementById('user-name').textContent = `${data.name} (${data.role})`;
+            
+            // Optional: customize UI based on role
+            if (data.role === 'staff') {
+                console.log("Staff is logged in");
+                // Hide admin-only UI elements, etc.
+            }
+        })
+        .catch(err => {
+            console.error('Error fetching user info:', err);
+        });
     </script>
 </head>
 <body>

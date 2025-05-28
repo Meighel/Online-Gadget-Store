@@ -14,6 +14,26 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'staff') {
     <title>Staff Dashboard</title>
     <link rel="stylesheet" href="../assets/css/admin_dashboard.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+    fetch('../API/fetch_user_name.php')
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                console.error(data.error);
+                return;
+            }
+            document.getElementById('user-name').textContent = `${data.name} (${data.role})`;
+            
+            // Optional: customize UI based on role
+            if (data.role === 'admin') {
+                console.log("Admin is logged in");
+                // Hide admin-only UI elements, etc.
+            }
+        })
+        .catch(err => {
+            console.error('Error fetching user info:', err);
+        });
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -41,9 +61,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'staff') {
                 </div>
                 
                 <div class="user-profile">
-                    <span>namitoki (staff)</span>
-                    <div class="user-avatar">DM</div>
+                    <span id="user-name">Loading...</span>
                 </div>
+
             </div>
         </div>
     </header>
