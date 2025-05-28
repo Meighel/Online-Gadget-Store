@@ -88,5 +88,12 @@ $products = $result->fetch_all(MYSQLI_ASSOC);
         </tbody>
     </table>
 </div>
+
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await fetch('../API/logout.php', { method: 'POST' });
+            window.location.href = '../Public/login.php';
+        });
+    </script>
 </body>
 </html>

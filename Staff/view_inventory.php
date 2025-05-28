@@ -13,6 +13,7 @@ $query = "
         Inventory.id,
         Users.name AS user_name,
         Products.name AS product_name,
+        Products.stocks AS current_stocks,
         Inventory.quantity,
         Inventory.price_at_purchase,
         Inventory.order_id,
@@ -64,6 +65,7 @@ $inventory = $result->fetch_all(MYSQLI_ASSOC);
                 <th>Quantity</th>
                 <th>Price at Purchase (₱)</th>
                 <th>Order ID</th>
+                <th>Current Stock</th>
                 <th>Purchased At</th>
             </tr>
         </thead>
@@ -79,6 +81,7 @@ $inventory = $result->fetch_all(MYSQLI_ASSOC);
                         <td><?= $row['quantity'] ?></td>
                         <td>₱<?= number_format($row['price_at_purchase'], 2) ?></td>
                         <td><?= $row['order_id'] ?></td>
+                        <td><?= $row['current_stocks'] ?></td>
                         <td><?= $row['purchased_at'] ?></td>
                     </tr>
                 <?php endforeach; ?>
@@ -87,5 +90,11 @@ $inventory = $result->fetch_all(MYSQLI_ASSOC);
     </table>
 </div>
 
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await fetch('../API/logout.php', { method: 'POST' });
+            window.location.href = '../Public/login.php';
+        });
+    </script>
 </body>
 </html>
