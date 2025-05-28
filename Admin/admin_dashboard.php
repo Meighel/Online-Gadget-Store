@@ -6,6 +6,16 @@
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="../assets/css/admin_dashboard.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        fetch('/../API/fetch_user_name.php')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('user-name').textContent = data.name;
+            })
+            .catch(err => {
+                console.error('Error fetching name:', err);
+            });
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -33,9 +43,9 @@
                 </div>
                 
                 <div class="user-profile">
-                    <span>Douglas McGee</span>
-                    <div class="user-avatar">DM</div>
+                    <span id="user-name">Loading...</span>
                 </div>
+
             </div>
         </div>
     </header>
@@ -425,6 +435,30 @@
         }
     `;
     document.head.appendChild(loadingSpinnerStyle);
+
+    function logout() {
+        if (confirm('Are you sure you want to logout?')) {
+            fetch('/../API/logout.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(data.message);
+                    window.location.href = '/../../index.php';
+                } else {
+                    alert('Logout failed. Please try again.');
+                }
+            })
+            .catch(err => {
+                console.error('Error during logout:', err);
+                alert('An error occurred. Please try again.');
+            });
+        }
+    }
     </script>
 </body>
 </html>
