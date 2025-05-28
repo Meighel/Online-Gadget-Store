@@ -1,8 +1,8 @@
 <?php
 session_start();
-require '../db.php';  // Your mysqli connection ($conn)
+require '../db.php';  
 
-$user_id = $_SESSION['user_id']; // Assuming user_id is stored in session
+$user_id = $_SESSION['user_id'];
 $query = "SELECT p.id, p.name, p.price, c.quantity FROM Cart c JOIN Products p ON c.product_id = p.id WHERE c.user_id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param('i', $user_id);
@@ -27,11 +27,10 @@ while ($row = $result->fetch_assoc()) {
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">TechNest</a>
+            <a class="navbar-brand" href="client_dashboard.php">TechNest</a>
             <div class="d-flex gap-2 align-items-center">
                 <a href="../Public/shop.php" class="nav-link text-white me-2">Shop</a>
                 <a href="../User /cart.php" class="nav-link text-white me-2">Cart</a>
-                <a href="settings.php" class="nav-link text-white me-2">Settings</a>
                 <button class="btn btn-outline-light" id="logoutBtn">Logout</button>
             </div>
         </div>

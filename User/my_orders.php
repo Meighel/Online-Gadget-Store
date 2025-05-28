@@ -32,7 +32,7 @@ $processed_orders = $processed_stmt->get_result();
 <head>
   <meta charset="UTF-8">
   <title>My Orders</title>
-  <link rel="stylesheet" href="styles.css"> <!-- Your CSS file -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <h1>Ongoing Orders</h1>

@@ -1,37 +1,47 @@
 <?php
 session_start();
-require '../db.php';  // Your mysqli connection ($conn)
+require '../db.php'; // adjust as needed
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
-    $user_id = $_SESSION['user_id']; // Assuming user_id is stored in session
-    $product_id = $data['product_id'];
-    $quantity = $data['quantity'];
+header('Content-Type: application/json');
 
-    // Check if the product is already in the cart
-    $checkQuery = "SELECT id FROM Cart WHERE user_id = ? AND product_id = ?";
-    $stmt = $conn->prepare($checkQuery);
-    $stmt->bind_param('ii', $user_id, $product_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        // Update quantity if product already exists in the cart
-        $updateQuery = "UPDATE Cart SET quantity = quantity + ? WHERE user_id = ? AND product_id = ?";
-        $stmt = $conn->prepare($updateQuery);
-        $stmt->bind_param('iii', $quantity, $user_id, $product_id);
-    } else {
-        // Insert new product into the cart
-        $insertQuery = "INSERT INTO Cart (user_id, product_id, quantity) VALUES (?, ?, ?)";
-        $stmt = $conn->prepare($insertQuery);
-        $stmt->bind_param('iii', $user_id, $product_id, $quantity);
-    }
-
-    if ($stmt->execute()) {
-        echo json_encode(['success' => true]);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to add to cart']);
-    }
+// Check session and input
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
     exit;
+}
+
+$data = json_decode(file_get_contents("php://input"), true);
+if (!isset($data['product_id'])) {
+    echo json_encode(['status' => 'error', 'message' => 'Product ID required']);
+    exit;
+}
+
+$user_id = $_SESSION['user_id'];
+$product_id = intval($data['product_id']);
+
+// Check if the product is already in the cart
+$check = $conn->prepare("SELECT * FROM cart WHERE user_id = ? AND product_id = ?");
+$check->bind_param("ii", $user_id, $product_id);
+$check->execute();
+$result = $check->get_result();
+
+if ($result->num_rows > 0) {
+    // Already in cart: update quantity
+    $update = $conn->prepare("UPDATE cart SET quantity = quantity + 1 WHERE user_id = ? AND product_id = ?");
+    $update->bind_param("ii", $user_id, $product_id);
+    if ($update->execute()) {
+        echo json_encode(['status' => 'success', 'message' => 'Quantity updated']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to update cart']);
+    }
+} else {
+    // Not in cart: insert new row
+    $stmt = $conn->prepare("INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, 1)");
+    $stmt->bind_param("ii", $user_id, $product_id);
+    if ($stmt->execute()) {
+        echo json_encode(['status' => 'success', 'message' => 'Added to cart']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Insert failed']);
+    }
 }
 ?>

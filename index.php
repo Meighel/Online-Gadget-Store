@@ -58,7 +58,7 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['user_role'])) {
   <div class="container">
     <h1>Welcome to TechNest</h1>
     <p class="lead">Shop your favorite items now!</p>
-    <a href="shop.php" class="btn btn-light btn-lg mt-3">Browse Products</a>
+    <a href="Public/shop.php" class="btn btn-light btn-lg mt-3">Browse Products</a>
   </div>
 </section>
 

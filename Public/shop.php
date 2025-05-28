@@ -1,124 +1,123 @@
 <?php
 session_start();
-require '../db.php';  // Your mysqli connection ($conn)
-
-if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
-    header('Content-Type: application/json');
-
-    $action = $_GET['action'] ?? 'all';
-
-    if ($action === 'all') {
-        $sql = "SELECT p.id, p.name, p.description, p.price, p.image, c.name AS category_name
-                FROM Products p
-                LEFT JOIN Categories c ON p.category_id = c.id";
-        $stmt = $conn->prepare($sql);
-    }
-    elseif ($action === 'category' && !empty($_GET['category'])) {
-        // Normalize category param exactly as JS sends it (lowercase, no spaces)
-        $category = strtolower($_GET['category']);
-        // SQL compares ignoring spaces & case for safety
-        $sql = "SELECT p.id, p.name, p.description, p.price, p.image, c.name AS category_name
-                FROM Products p
-                LEFT JOIN Categories c ON p.category_id = c.id
-                WHERE LOWER(REPLACE(c.name, ' ', '')) = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('s', $category);
-    }
-    elseif ($action === 'search' && !empty($_GET['term'])) {
-        $term = '%' . $_GET['term'] . '%';
-        $sql = "SELECT p.id, p.name, p.description, p.price, p.image, c.name AS category_name
-                FROM Products p
-                LEFT JOIN Categories c ON p.category_id = c.id
-                WHERE p.name LIKE ? OR p.description LIKE ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('ss', $term, $term);
-    }
-    else {
-        echo json_encode([]);
-        exit;
-    }
-
-    if ($stmt->execute()) {
-        $result = $stmt->get_result();
-        $products = [];
-        while ($row = $result->fetch_assoc()) {
-            $products[] = [
-                'id' => $row['id'],
-                'name' => $row['name'],
-                'description' => $row['description'],
-                'price' => $row['price'],
-                'image_url' => $row['image'],   // matches your JS
-                'category_name' => $row['category_name'] ?? 'Uncategorized', // Ensure this is set correctly
-                'rating' => rand(3, 5),          // dummy rating for example
-                'badge' => ''                    // placeholder
-            ];
-        }
-        echo json_encode($products);
-    } else {
-        echo json_encode(['error' => 'Failed to fetch products']);
-    }
-    exit;
-}
+$isLoggedIn = isset($_SESSION['user_id']);
+$userId = $_SESSION['user_id'] ?? null;
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechNest - Gadgets Shop</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/shop_styles.css">
+  <meta charset="UTF-8" />
+  <title>Shop | TechNest</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
-<body>
+<body class="bg-light">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">TechNest</a>
-            <div class="d-flex gap-2 align-items-center">
-                <a href="../Public/shop.php" class="nav-link text-white me-2">Shop</a>
-                <a class="nav-link position-relative text-white" href="../User/cart.php">
-                    <i class="fas fa-shopping-cart me-1"></i>
-                    <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" id="cartCount" style="font-size: 0.7rem;">0</span>
-                </a>
-                <a href="settings.php" class="nav-link text-white me-2">Settings</a>
-                <button class="btn btn-outline-light" id="logoutBtn">Logout</button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero-section" id="home">
-        <div class="container">
-            <div class="hero-content text-center">
-                <h1 class="display-4 mb-4">Discover Amazing Gadgets</h1>
-                <p class="lead mb-4">Find the latest tech gadgets at unbeatable prices</p>
-                <div class="row justify-content-center">
-                    <div class="col-md-6">
-                        <div class="search-container position-relative">
-                            <input type="text" class="search-input" placeholder="Search for gadgets..." id="searchInput">
-                            <button class="search-btn" onclick="searchProducts()">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="container" id="products">
-        <div id="loadingSpinner" class="loading" style="display: none;">
-        <div class="spinner"></div>
-        <p class="mt-3">Loading amazing gadgets...</p>
-        </div>
-        <div class="product-grid" id="productGrid">
-        <!-- Products loaded by JS -->
-        </div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="../index.php">TechNest</a>
+    <div class="d-flex gap-2">
+      <a href="shop.php" class="btn text-white">Shop</a>
+      <?php if ($isLoggedIn): ?>
+        <a href="../User/cart.php" class="btn text-white">Cart</a>
+        <button id="logoutBtn" class="btn btn-outline-light">Logout</button>
+      <?php endif; ?>
     </div>
+  </div>
+</nav>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-  <script src="../javascript/shop.js"></script>
+<div class="container mt-5">
+  <h2 class="mb-4">Explore Our Products</h2>
+  <div id="productContainer" class="row g-4">
+    <!-- Products will be injected here -->
+  </div>
+</div>
+
+<script>
+const isLoggedIn = <?= json_encode($isLoggedIn) ?>;
+const userId = <?= json_encode($userId) ?>;
+
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('../API/get_products.php')
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success' && Array.isArray(data.products)) {
+        const products = data.products;
+        const container = document.getElementById('productContainer');
+
+        if (products.length === 0) {
+          container.innerHTML = '<p>No products available.</p>';
+          return;
+        }
+
+        products.forEach(product => {
+          const imageSrc = product.image_url.startsWith('http')
+            ? product.image_url
+            : '../' + product.image_url.replace(/^\/+/, '');
+
+          const card = document.createElement('div');
+          card.className = 'col-md-4';
+
+          card.innerHTML = `
+            <div class="card h-100">
+              <img src="${imageSrc}" class="card-img-top" alt="${product.name}" style="max-height: 200px; object-fit: contain;">
+              <div class="card-body">
+                <h5 class="card-title">${product.name}</h5>
+                <p class="card-text">${product.description}</p>
+                <p class="text-primary fw-bold">₱${Number(product.price).toLocaleString()}</p>
+                <button class="btn btn-sm btn-outline-primary add-to-cart-btn" data-product-id="${product.id}">Add to Cart</button>
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+          button.addEventListener('click', async () => {
+            const productId = button.dataset.productId;
+
+            if (!isLoggedIn) {
+              window.location.href = 'login.php';
+              return;
+            }
+
+            const response = await fetch('../API/add_to_cart.php', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                product_id: productId,
+              })
+            });
+
+            const result = await response.json();
+            if (result.status === 'success') {
+              alert('Added to cart!');
+            } else {
+              alert('Failed to add to cart.');
+            }
+          });
+        });
+
+      } else {
+        document.getElementById('productContainer').innerHTML = '<p>Error loading products.</p>';
+      }
+    })
+    .catch(err => {
+      console.error('Fetch error:', err);
+      document.getElementById('productContainer').innerHTML = '<p>Unable to load products.</p>';
+    });
+
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      await fetch('../API/logout.php', { method: 'POST' });
+      window.location.href = 'login.php';
+    });
+  }
+});
+</script>
+
 </body>
 </html>

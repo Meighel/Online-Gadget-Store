@@ -1,8 +1,8 @@
 <?php
 session_start();
-require '../db.php';  // Your mysqli connection ($conn)
+require '../db.php';  
 
-$user_id = $_SESSION['user_id']; // Assuming user_id is stored in session
+$user_id = $_SESSION['user_id'];
 
 $query = "SELECT SUM(quantity) AS count FROM Cart WHERE user_id = ?";
 $stmt = $conn->prepare($query);

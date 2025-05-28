@@ -40,7 +40,7 @@ $productResult = $conn->query($productSql);
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
-          <a class="navbar-brand" href="#">TechNest</a>
+          <a class="navbar-brand" href="client_dashboard.php">TechNest</a>
           <div class="d-flex gap-2 align-items-center">
               <a href="../Public/shop.php" class="nav-link text-white me-2">Shop</a>
               <a class="nav-link position-relative text-white" href="../User/cart.php">
