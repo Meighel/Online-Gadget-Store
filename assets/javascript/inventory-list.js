@@ -66,12 +66,17 @@ function initializeDataTable(items) {
                     data: 'id',
                     orderable: false,
                     searchable: false,
-                    render: id => `
-                        <div class="action-buttons">
-                            <button class="btn btn-edit" onclick="editItem(${id})"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="btn btn-delete" onclick="deleteItem(${id})"><i class="fas fa-trash"></i> Delete</button>
-                        </div>
-                    `
+                    render: id => {
+                        if (currentUserRole === 'admin') {
+                            return `
+                                <div class="action-buttons">
+                                    <button class="btn btn-edit" onclick="editItem(${id})"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="btn btn-delete" onclick="deleteItem(${id})"><i class="fas fa-trash"></i> Delete</button>
+                                </div>`;
+                        } else {
+                            return `<span class="text-muted">View Only</span>`;
+                        }
+                    }
                 }
             ],
             order: [[0, 'desc']],
@@ -103,6 +108,7 @@ function showError(message) {
 }
 
 function openAddModal() {
+    if (currentUserRole !== 'admin') return alert('Access Denied: Only admins can add items.');
     $('#modalTitle').text('Add Inventory Item');
     $('#inventoryForm')[0].reset();
     $('#itemId').val('');
@@ -110,6 +116,7 @@ function openAddModal() {
 }
 
 function editItem(id) {
+    if (currentUserRole !== 'admin') return alert('Access Denied: Only admins can edit items.');
     const item = inventoryData.find(i => i.id === id);
     if (item) {
         $('#modalTitle').text('Edit Inventory Item');
@@ -123,6 +130,7 @@ function editItem(id) {
 }
 
 function deleteItem(id) {
+    if (currentUserRole !== 'admin') return alert('Access Denied: Only admins can delete items.');
     if (confirm('Are you sure you want to delete this inventory item?')) {
         inventoryData = inventoryData.filter(i => i.id !== id);
         initializeDataTable(inventoryData);
@@ -131,6 +139,7 @@ function deleteItem(id) {
 }
 
 function saveItem() {
+    if (currentUserRole !== 'admin') return alert('Access Denied: Only admins can save items.');
     const formData = {
         id: $('#itemId').val(),
         name: $('#itemName').val(),

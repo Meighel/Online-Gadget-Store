@@ -33,6 +33,9 @@
         .catch(err => {
             console.error('Error fetching user info:', err);
         });
+
+        const currentUserRole = 'admin'; // or 'admin'
+
     </script>
 </head>
 <body>

@@ -121,7 +121,7 @@ $productResult = $conn->query($productSql);
               <div class="card-body">
                 <h5 class="card-title"><?= htmlspecialchars($product['name']) ?></h5>
                 <p class="card-text"><?= htmlspecialchars($product['description']) ?></p>
-                <p class="text-primary fw-bold">₱<?= number_format($product['price'], 2) ?></p>
+                <p class="text-primary fw-bold">$<?= number_format($product['price'], 2) ?></p>
                 <button class="btn btn-primary" onclick="addToCart(<?= $product['id'] ?>)">Add to Cart</button>
               </div>
             </div>

@@ -51,7 +51,7 @@ function initializeDataTable(users) {
                         <th>Email</th>
                         <th>Role</th>
                         <th>Created At</th>
-                        <th>Actions</th>
+                        ${currentUserRole === 'admin' ? '<th>Actions</th>' : ''}
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -66,7 +66,7 @@ function initializeDataTable(users) {
                 { data: 'email' },
                 { data: 'role' },
                 { data: 'created_at' },
-                {
+                ...(currentUserRole === 'admin' ? [{
                     data: 'id',
                     orderable: false,
                     searchable: false,
@@ -79,7 +79,7 @@ function initializeDataTable(users) {
                                 <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>`
-                }
+                }] : [])
             ],
             processing: true,
             pageLength: 10,
@@ -95,6 +95,12 @@ function initializeDataTable(users) {
             },
             dom: 'lfrtip'
         });
+
+        // Disable Ctrl+Shift+A shortcut for non-admins
+        if (currentUserRole !== 'admin') {
+            $(document).off('keydown'); // remove previous shortcut bindings
+        }
+
     } else {
         usersTable.clear().rows.add(users).draw();
     }
@@ -115,6 +121,7 @@ function showError(message) {
 }
 
 function openAddModal() {
+    if (currentUserRole !== 'admin') return alert("Only admins can add users.");
     $('#modalTitle').text('Add User');
     $('#userForm')[0].reset();
     $('#userId').val('');
@@ -122,6 +129,7 @@ function openAddModal() {
 }
 
 function editUser(id) {
+    if (currentUserRole !== 'admin') return alert("Only admins can edit users.");
     const user = usersData.find(u => u.id === id);
     if (user) {
         $('#modalTitle').text('Edit User');
@@ -134,6 +142,7 @@ function editUser(id) {
 }
 
 function deleteUser(id) {
+    if (currentUserRole !== 'admin') return alert("Only admins can delete users.");
     if (confirm('Are you sure you want to delete this user?')) {
         usersData = usersData.filter(user => user.id !== id);
         initializeDataTable(usersData);
@@ -142,6 +151,7 @@ function deleteUser(id) {
 }
 
 function saveUser() {
+    if (currentUserRole !== 'admin') return alert("Only admins can save users.");
     const formData = {
         id: $('#userId').val(),
         name: $('#userName').val(),
