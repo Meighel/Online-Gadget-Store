@@ -148,14 +148,12 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
       window.location.href = '../Public/login.php';
     });
 
-    if (isLoggedIn) {
-        fetch('/API/get_cart_count.php')
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('cartCount').innerText = data.count || 0;
-            })
-            .catch(err => console.error('Failed to fetch cart count:', err));
-    }
+    fetch('/API/get_cart_count.php')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('cartCount').innerText = data.count || 0;
+      })
+      .catch(err => console.error('Failed to fetch cart count:', err));
 </script>
 </body>
 </html>

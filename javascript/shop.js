@@ -37,15 +37,13 @@ async function fetchProducts(action = 'all', param = '') {
 }
 
 function renderProducts(products) {
-    const isLoggedIn = window.isLoggedIn; // set from PHP in <script>
-
     if (!products || products.length === 0) {
         productGrid.innerHTML = '<p>No products found.</p>';
         return;
     }
 
-    productGrid.innerHTML = products.map(product => {
-        const productCardHTML = `
+    productGrid.innerHTML = products.map(product => `
+        <a href="/Public/product.php?id=${product.id}" class="product-link">
             <div class="product-card">
                 <img src="${product.image_url}" alt="${product.name}" class="product-image" />
                 <h5>${product.name}</h5>
@@ -54,17 +52,10 @@ function renderProducts(products) {
                 <p>Rating: ${product.rating}</p>
                 ${product.badge ? `<span class="badge bg-primary">${product.badge}</span>` : ''}
                 <p>${product.description}</p>
-                ${isLoggedIn 
-                    ? `<button class="btn btn-sm btn-primary" onclick="event.preventDefault(); addToCart(${product.id});">Add to Cart</button>`
-                    : ''
-                }
+                <button class="btn btn-sm btn-primary" onclick="event.preventDefault(); addToCart(${product.id});">Add to Cart</button>
             </div>
-        `;
-
-        // Wrap the card in a clickable link to product or login depending on login status
-        const href = isLoggedIn ? `/Public/product.php?id=${product.id}` : `/Public/login.php`;
-        return `<a href="${href}" class="product-link">${productCardHTML}</a>`;
-    }).join('');
+        </a>
+    `).join('');
 }
 
 
