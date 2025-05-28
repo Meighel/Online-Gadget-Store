@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="../css/admin_dashboard.css">
+    <link rel="stylesheet" href="../assets/css/admin_dashboard.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script>
-        fetch('/../API/fetch_user_name.php')
+        fetch('../API/fetch_user_name.php')
             .then(res => res.json())
             .then(data => {
                 document.getElementById('user-name').textContent = data.name;
@@ -70,19 +70,19 @@
                 </a>
                 
                 <!-- Category Management -->
-                <a href="admin/categories.php" class="sidebar-item <?php echo ($current_page == 'categories') ? 'active' : ''; ?>">
+                <a href="categories.php" class="sidebar-item <?php echo ($current_page == 'categories') ? 'active' : ''; ?>">
                     <i class="fas fa-tags"></i>
                     <span>Category Management</span>
                 </a>
                 
                 <!-- User Management -->
-                <a href="admin/users/list.php" class="sidebar-item <?php echo ($current_page == 'users-list') ? 'active' : ''; ?>">
+                <a href="users.php" class="sidebar-item <?php echo ($current_page == 'users-list') ? 'active' : ''; ?>">
                     <i class="fas fa-users"></i>
                     <span>User Management</span>
                 </a>
                 
                 <!-- Inventory Management -->
-                <a href="admin/inventory.php" class="sidebar-item <?php echo ($current_page == 'inventory') ? 'active' : ''; ?>">
+                <a href="inventory.php" class="sidebar-item <?php echo ($current_page == 'inventory') ? 'active' : ''; ?>">
                     <i class="fas fa-warehouse"></i>
                     <span>Inventory Management</span>
                 </a>

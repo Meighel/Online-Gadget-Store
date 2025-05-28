@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Management</title>
     <!-- CSS Files -->
-    <link rel="stylesheet" href="/css/admin_dashboard.css">
+    <link rel="stylesheet" href="../assets/css/admin_dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/admin-products.css">
+    <link rel="stylesheet" href="../assets/css/admin-products.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
     <!-- JavaScript Files -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="../javascript/products-list.js"></script>
+    <script src="../assets/javascript/products-list.js"></script>
 </head>
 <body>
     <!-- Header -->
@@ -160,14 +160,14 @@
     </footer>
     <script>
         document.getElementById('logoutBtn').addEventListener('click', async () => {
-        await fetch('../API/logout.php', { method: 'POST' });
-        window.location.href = '../Public/login.php';
-        });
+            await fetch('../API/logout.php', { method: 'POST' });
+            window.location.href = '../Public/login.php';
+            });
 
-        fetch('/API/get_cart_count.php')
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById('cartCount').innerText = data.count || 0;
+            fetch('/API/get_cart_count.php')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('cartCount').innerText = data.count || 0;
         })
         .catch(err => console.error('Failed to fetch cart count:', err));
     </script>

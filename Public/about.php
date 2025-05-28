@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us - TechTrove Gadget Store</title>
-    <link rel="stylesheet" href="css/settings_about.css">
+    <link rel="stylesheet" href="../assets/css/settings_about.css">
     <link rel="icon" href="images/favicon.png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/about.css">
-    <link rel="stylesheet" href="../css/shop_styles.css">
+    <link rel="stylesheet" href="../assets/css/about.css">
+    <link rel="stylesheet" href="../assets/css/shop_styles.css">
 </head>
 <body>
 

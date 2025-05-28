@@ -34,8 +34,8 @@ $productResult = $conn->query($productSql);
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/css/shop_styles.css">
-  <link rel="stylesheet" href="/css/client_dashboard.css">
+  <link rel="stylesheet" href="../assets/css/shop_styles.css">
+  <link rel="stylesheet" href="../assets/css/client_dashboard.css">
 </head>
 <body>
 
@@ -137,36 +137,36 @@ $productResult = $conn->query($productSql);
   </div>
 
   <script>
-  async function addToCart(productId) {
-    try {
-      const response = await fetch(`../API/add_to_cart.php`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product_id: productId, quantity: 1 })
-      });
+    async function addToCart(productId) {
+      try {
+        const response = await fetch(`../API/add_to_cart.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ product_id: productId, quantity: 1 })
+        });
 
-      const result = await response.json();
-        if (result.success) {
-          alert("Product added to cart!");
-        } else {
-          alert(result.message);
+        const result = await response.json();
+          if (result.success) {
+            alert("Product added to cart!");
+          } else {
+            alert(result.message);
+          }
+          } catch (err) {
+            alert("Error: " + err.message);
+          }
         }
-        } catch (err) {
-          alert("Error: " + err.message);
-        }
-      }
-  document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await fetch('../API/logout.php', { method: 'POST' });
-    window.location.href = '../Public/login.php';
-  });
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+          await fetch('../API/logout.php', { method: 'POST' });
+          window.location.href = '../Public/login.php';
+        });
 
-  fetch('/API/get_cart_count.php')
-              .then(res => res.json())
-              .then(data => {
-                  document.getElementById('cartCount').innerText = data.count || 0;
-              })
-              .catch(err => console.error('Failed to fetch cart count:', err));
-  </script>
+        fetch('/API/get_cart_count.php')
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('cartCount').innerText = data.count || 0;
+                    })
+                    .catch(err => console.error('Failed to fetch cart count:', err));
+    </script>
 
 </body>
 </html>

@@ -41,8 +41,8 @@ $processed_orders = $processed_stmt->get_result();
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../css/shop_styles.css">
-  <link rel="stylesheet" href="../css/orders.css">
+  <link rel="stylesheet" href="../assets/css/shop_styles.css">
+  <link rel="stylesheet" href="../assets/css/orders.css">
 </head>
 <body class="bg-light">
 
@@ -128,7 +128,7 @@ $processed_orders = $processed_stmt->get_result();
       window.location.href = '../Public/login.php';
     });
 
-    fetch('/API/get_cart_count.php')
+    fetch('../API/get_cart_count.php')
                 .then(res => res.json())
                 .then(data => {
                     document.getElementById('cartCount').innerText = data.count || 0;

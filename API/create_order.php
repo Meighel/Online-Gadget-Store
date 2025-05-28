@@ -33,6 +33,11 @@ try {
         $stmt->execute();
     }
 
+    // Insert into Inventory (audit log)
+    $stmt = $conn->prepare("INSERT INTO Inventory (product_id, user_id, quantity, price_at_purchase, order_id) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("iiidi", $product_id, $user_id, $quantity, $price, $order_id);
+    $stmt->execute();
+
     // Clear the selected items from the cart
     $stmt = $conn->prepare("DELETE FROM Cart WHERE user_id = ? AND product_id = ?");
     foreach ($items as $item) {
@@ -40,26 +45,6 @@ try {
         $stmt->bind_param("ii", $user_id, $pid);
         $stmt->execute();
     }
-
-    // Prepare once
-    $stmtInventory = $conn->prepare("INSERT INTO Inventory (product_id, user_id, quantity, price_at_purchase, order_id) VALUES (?, ?, ?, ?, ?)");
-    $stmtUpdateStock = $conn->prepare("UPDATE Products SET stocks = stocks - ? WHERE id = ?");
-
-    // Loop to insert inventory log and update stock
-    foreach ($items as $item) {
-        $product_id = intval($item['id']);
-        $quantity = intval($item['quantity']);
-        $price = floatval($item['price']);
-
-        // Insert audit log
-        $stmtInventory->bind_param("iiidi", $product_id, $user_id, $quantity, $price, $order_id);
-        $stmtInventory->execute();
-
-        // Decrease stock
-        $stmtUpdateStock->bind_param("ii", $quantity, $product_id);
-        $stmtUpdateStock->execute();
-    }
-
 
     $conn->commit();
     $_SESSION['latest_order_id'] = $order_id;
