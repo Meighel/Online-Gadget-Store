@@ -7,7 +7,7 @@
     <!-- CSS Files -->
     <link rel="stylesheet" href="../assets/css/admin_dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/admin-products.css">
+    <link rel="stylesheet" href="../assets/css/admin-categories.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
     <!-- JavaScript Files -->
@@ -99,6 +99,7 @@
     <main class="main-content">
         <div class="page-header">
             <h1 class="page-title">Category Management</h1>
+            <p class="page-subtitle">Manage your category inventory with ease</p>
         </div>
 
         <div class="table-container">
@@ -155,13 +156,6 @@
         await fetch('../API/logout.php', { method: 'POST' });
         window.location.href = '../Public/login.php';
         });
-
-        fetch('/API/get_cart_count.php')
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById('cartCount').innerText = data.count || 0;
-        })
-        .catch(err => console.error('Failed to fetch cart count:', err));
     </script>
 </body>
 </html>

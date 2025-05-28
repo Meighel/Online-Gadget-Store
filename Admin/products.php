@@ -251,14 +251,6 @@ $current_page = 'products';
             window.location.href = '../Public/login.php';
         });
 
-        fetch('/API/get_cart_count.php')
-            .then(res => res.json())
-            .then(data => {
-                const cartCount = document.getElementById('cartCount');
-                if (cartCount) cartCount.innerText = data.count || 0;
-            })
-            .catch(err => console.error('Failed to fetch cart count:', err));
-
         // Enhanced form handling
         document.getElementById('addProductForm').addEventListener('submit', function(e) {
             const submitBtn = this.querySelector('button[type="submit"]');

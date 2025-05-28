@@ -7,13 +7,14 @@
     <!-- CSS Files -->
     <link rel="stylesheet" href="../assets/css/admin_dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/admin-products.css">
+    <link rel="stylesheet" href="../assets/css/admin-categories.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
     <!-- JavaScript Files -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="../assets/javascript/inventory-list.js"></script>
+    
 </head>
 <body>
     <!-- Header -->
@@ -80,6 +81,7 @@
     <main class="main-content">
         <div class="page-header">
             <h1 class="page-title">Inventory Management</h1>
+            <p class="page-subtitle">Manage Inventory with ease</p>
         </div>
         <div class="table-container">
             <div class="table-header">
@@ -148,12 +150,6 @@
         window.location.href = '../Public/login.php';
         });
 
-        fetch('../API/get_cart_count.php')
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById('cartCount').innerText = data.count || 0;
-        })
-        .catch(err => console.error('Failed to fetch cart count:', err));
     </script>
 </body>
 </html>

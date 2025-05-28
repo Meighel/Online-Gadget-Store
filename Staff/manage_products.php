@@ -32,11 +32,6 @@ $current_page = 'products';
                 <i class="fas fa-tachometer-alt"></i> TechNest Staff
             </div>
 
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search for...">
-            </div>
-
             <div class="header-actions">
                 <div class="notification-badge">
                     <i class="fas fa-bell"></i>
@@ -94,7 +89,7 @@ $current_page = 'products';
         </div>
     </aside>
 
-    <!-- Main Content -->
+       <!-- Main Content -->
     <main class="main-content">
         <div class="page-header">
             <h1 class="page-title">Product Management</h1>
@@ -178,7 +173,7 @@ $current_page = 'products';
                 </h3>
             </div>
             
-            <table" class="table">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -229,23 +224,12 @@ $current_page = 'products';
     </main>
 
     <!-- Script -->
-    <!-- <script src="../assets/javascript/products-list.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> -->
-    
+    <!--<script src="../assets/javascript/products-list.js"></script>-->
     <script>
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             await fetch('../API/logout.php', { method: 'POST' });
             window.location.href = '../Public/login.php';
         });
-
-        fetch('/API/get_cart_count.php')
-            .then(res => res.json())
-            .then(data => {
-                const cartCount = document.getElementById('cartCount');
-                if (cartCount) cartCount.innerText = data.count || 0;
-            })
-            .catch(err => console.error('Failed to fetch cart count:', err));
 
         // Enhanced form handling
         document.getElementById('addProductForm').addEventListener('submit', function(e) {
