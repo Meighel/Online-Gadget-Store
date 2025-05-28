@@ -64,7 +64,7 @@
                 <div class="sidebar-title">Management</div>
                 
                 <!-- Product Management -->
-                <a href="admin/products.php" class="sidebar-item <?php echo ($current_page == 'products') ? 'active' : ''; ?>">
+                <a href="products.php" class="sidebar-item <?php echo ($current_page == 'products') ? 'active' : ''; ?>">
                     <i class="fas fa-box"></i>
                     <span>Product Management</span>
                 </a>
