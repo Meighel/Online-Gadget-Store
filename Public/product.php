@@ -12,7 +12,7 @@ if (!$product_id || !is_numeric($product_id)) {
 // Fetch product details
 $sql = "SELECT p.id, p.name, p.description, p.price, p.image, c.name AS category_name
         FROM Products p
-        LEFT JOIN Categories c ON p.category_id = c.id
+        LEFT JOIN categories c ON p.id = c.id
         WHERE p.id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $product_id);
@@ -37,7 +37,7 @@ $product = $result->fetch_assoc();
 </head>
 <body>
     <div class="container mt-5">
-        <a href="shop.php" class="btn btn-secondary mb-4">← Back to Shop</a>
+        <a href="shop.php" class="btn btn-secondary mb-4">Back to Shop</a>
         <div class="row">
             <div class="col-md-6">
                 <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="img-fluid">
