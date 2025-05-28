@@ -1,29 +1,29 @@
-<?php
-session_start();
-require '../db.php';
-
-// Only allow staff
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'staff') {
-    header("Location: ../Public/login.php");
-    exit;
-}
-
-// Fetch all users
-$result = $conn->query("SELECT id, name, email, role, created_at FROM users ORDER BY created_at DESC");
-$users = $result->fetch_all(MYSQLI_ASSOC);
-?>
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>View Users</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <!-- CSS Files -->
     <link rel="stylesheet" href="../assets/css/admin_dashboard.css">
-    <link rel="stylesheet" href="../assets/css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/admin-categories.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <!-- JavaScript Files -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/javascript/users-list.js"></script>
+    <script>
+        fetch('../API/fetch_user_name.php')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('user-name').textContent = data.name;
+            })
+            .catch(err => {
+                console.error('Error fetching name:', err);
+            });
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -31,12 +31,7 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
         <div class="header-content">
             <div class="logo">
                 <i class="fas fa-tachometer-alt"></i>
-                TechNest Staff
-            </div>
-            
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search for...">
+                TechNest
             </div>
             
             <div class="header-actions">
@@ -51,8 +46,7 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
                 </div>
                 
                 <div class="user-profile">
-                    <span>namitoki (staff)</span>
-                    <div class="user-avatar">DM</div>
+                    <span id="user-name">Loading...</span>
                 </div>
             </div>
         </div>
@@ -62,82 +56,70 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
     <aside id="sidebar" class="sidebar">
         <div class="sidebar-content">
             <div class="sidebar-section">
-                <div class="sidebar-item <?php echo ($current_page == 'admin_dashboard' || $current_page == 'index') ? 'active' : ''; ?>">
+                <a href="staff_dashboard.php" class="sidebar-item">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span>
-                </div>
+                </a>
             </div>
 
             <div class="sidebar-section">
                 <div class="sidebar-title">Management</div>
                 
-                <!-- Product Management -->
-                <a href="manage_products.php" class="sidebar-item <?php echo ($current_page == 'products') ? 'active' : ''; ?>">
+                <a href="manage_products.php" class="sidebar-item">
                     <i class="fas fa-box"></i>
                     <span>Product Management</span>
                 </a>
+            
                 
-                <!-- View Users -->
-                <a href="view_users.php" class="sidebar-item <?php echo ($current_page == 'Users') ? 'active' : ''; ?>">
-                    <i class="fas fa-tags"></i>
+                <a href="view_users.php" class="sidebar-item active">
+                    <i class="fas fa-users"></i>
                     <span>Users List</span>
                 </a>
                 
-                <!-- Inventory Management -->
-                <a href="view_inventory.php" class="sidebar-item <?php echo ($current_page == 'inventory') ? 'active' : ''; ?>">
+                <a href="view_inventory.php" class="sidebar-item">
                     <i class="fas fa-warehouse"></i>
-                    <span>Inventory Management</span>
+                    <span>Inventory List</span>
                 </a>
             </div>
         </div>
 
-        <!-- Sidebar Footer -->
         <div class="sidebar-footer">
-            <div class="sidebar-item"  id="logoutBtn">
+            <div class="sidebar-item" id="logoutBtn"">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </div>
         </div>
     </aside>
 
-    <div class="container mt-5">
-        <h2>All Registered Users</h2>
-        <table class="table table-bordered mt-3">
-            <thead class="thead-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Created At</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($users as $user): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($user['id']) ?></td>
-                        <td><?= htmlspecialchars($user['name']) ?></td>
-                        <td><?= htmlspecialchars($user['email']) ?></td>
-                        <td><?= htmlspecialchars($user['role']) ?></td>
-                        <td><?= htmlspecialchars($user['created_at']) ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Users Lists</h1>
+            <p class="page-subtitle">View Users Inventory with ease</p>
+
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h2 class="table-title">Users Records</h2>
+            </div>
+            
+            <div id="table-content">
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <h3>Loading Categories...</h3>
+                    <p>Please wait while we fetch your users from the database.</p>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <script>
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             await fetch('../API/logout.php', { method: 'POST' });
             window.location.href = '../Public/login.php';
-        });
+            });
 
-        fetch('/API/get_cart_count.php')
-                    .then(res => res.json())
-                    .then(data => {
-                        document.getElementById('cartCount').innerText = data.count || 0;
-                    })
-                    .catch(err => console.error('Failed to fetch cart count:', err));
     </script>
 </body>
 </html>

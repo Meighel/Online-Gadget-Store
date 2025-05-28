@@ -52,31 +52,28 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'staff') {
     <aside id="sidebar" class="sidebar">
         <div class="sidebar-content">
             <div class="sidebar-section">
-                <div class="sidebar-item <?php echo ($current_page == 'admin_dashboard' || $current_page == 'index') ? 'active' : ''; ?>">
+                <a href="staff_dashboard.php" class="sidebar-item">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span>
-                </div>
+                </a>
             </div>
 
             <div class="sidebar-section">
                 <div class="sidebar-title">Management</div>
-                
-                <!-- Product Management -->
-                <a href="manage_products.php" class="sidebar-item <?php echo ($current_page == 'products') ? 'active' : ''; ?>">
+
+                <a href="manage_products.php" class="sidebar-item">
                     <i class="fas fa-box"></i>
                     <span>Product Management</span>
                 </a>
-                
-                <!-- View Users -->
-                <a href="view_users.php" class="sidebar-item <?php echo ($current_page == 'Users') ? 'active' : ''; ?>">
-                    <i class="fas fa-tags"></i>
+
+                <a href="view_users.php" class="sidebar-item">
+                    <i class="fas fa-users"></i>
                     <span>Users List</span>
                 </a>
-                
-                <!-- Inventory Management -->
-                <a href="view_inventory.php" class="sidebar-item <?php echo ($current_page == 'inventory') ? 'active' : ''; ?>">
+
+                <a href="view_inventory.php" class="sidebar-item active">
                     <i class="fas fa-warehouse"></i>
-                    <span>Inventory Management</span>
+                    <span>Inventory Lists</span>
                 </a>
             </div>
         </div>

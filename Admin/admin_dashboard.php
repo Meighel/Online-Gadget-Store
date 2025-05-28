@@ -209,11 +209,6 @@
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2025 TechNest Admin Dashboard.</p>
-    </footer>
-
     <script>
             // Sidebar functionality
     function toggleSubmenu(element) {

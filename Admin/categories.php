@@ -146,11 +146,6 @@
     </div>
 
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2025 TechNest Admin Dashboard.</p>
-    </footer>
-
     <script>
         document.getElementById('logoutBtn').addEventListener('click', async () => {
         await fetch('../API/logout.php', { method: 'POST' });
