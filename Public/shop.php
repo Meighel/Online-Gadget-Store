@@ -75,14 +75,14 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">TechNest</a>
+            <a class="navbar-brand" href="../User/client_dashboard.php">TechNest</a>
             <div class="d-flex gap-2 align-items-center">
                 <a href="../Public/shop.php" class="nav-link text-white me-2">Shop</a>
                 <a class="nav-link position-relative text-white" href="../User/cart.php">
                     <i class="fas fa-shopping-cart me-1"></i>
                     <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" id="cartCount" style="font-size: 0.7rem;">0</span>
                 </a>
-                <a href="settings.php" class="nav-link text-white me-2">Settings</a>
+                <a href="../User/my_orders.php" class="nav-link text-white me-2">Orders</a>
                 <button class="btn btn-outline-light" id="logoutBtn">Logout</button>
             </div>
         </div>
@@ -118,7 +118,15 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
         </div>
     </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-  <script src="../javascript/shop.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="../javascript/shop.js"></script>
+    <script>
+        fetch('/API/get_cart_count.php')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('cartCount').innerText = data.count || 0;
+            })
+            .catch(err => console.error('Failed to fetch cart count:', err));
+    </script>
 </body>
 </html>

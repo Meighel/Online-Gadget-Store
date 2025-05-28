@@ -37,7 +37,7 @@ $ordersResult = $stmt->get_result();
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
-          <a class="navbar-brand" href="#">TechNest</a>
+          <a class="navbar-brand" href="client_dashboard.php">TechNest</a>
           <div class="d-flex gap-2 align-items-center">
               <a href="../Public/shop.php" class="nav-link text-white me-2">Shop</a>
               <a class="nav-link position-relative text-white" href="../User/cart.php">
@@ -50,102 +50,110 @@ $ordersResult = $stmt->get_result();
       </div>
   </nav>
 
-<div class="container mt-5">
-  <h1>Welcome, <?= htmlspecialchars($userName) ?>!</h1>
-  <p><strong>Email:</strong> <?= htmlspecialchars($userEmail) ?></p>
-  <p><strong>Role:</strong> <?= htmlspecialchars($userRole) ?></p>
-  <p><strong>Joined:</strong> <?= date('F d, Y', strtotime($userCreatedAt)) ?></p>
-  <hr>
+  <div class="container mt-5">
+    <h1>Welcome, <?= htmlspecialchars($userName) ?>!</h1>
+    <p><strong>Email:</strong> <?= htmlspecialchars($userEmail) ?></p>
+    <p><strong>Role:</strong> <?= htmlspecialchars($userRole) ?></p>
+    <p><strong>Joined:</strong> <?= date('F d, Y', strtotime($userCreatedAt)) ?></p>
+    <hr>
 
-  <h3>Your Recent Orders</h3>
-  <?php if ($ordersResult && $ordersResult->num_rows > 0): ?>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Order ID</th>
-          <th>Date</th>
-          <th>Status</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php while ($order = $ordersResult->fetch_assoc()): ?>
+    <h3>Your Recent Orders</h3>
+    <?php if ($ordersResult && $ordersResult->num_rows > 0): ?>
+      <table class="table table-striped">
+        <thead>
           <tr>
-            <td><?= $order['id'] ?></td>
-            <td><?= date('M d, Y', strtotime($order['created_at'])) ?></td>
-            <td><?= htmlspecialchars($order['status']) ?></td>
-            <td>₱<?= number_format($order['total_amount'], 2) ?></td>
+            <th>Order ID</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Total</th>
           </tr>
-        <?php endwhile; ?>
-      </tbody>
-    </table>
-  <?php else: ?>
-    <p>You have no recent orders.</p>
-  <?php endif; ?>
-</div>
-
-
-<div class="container mt-5">
-  <hr>
-  <h3>Available Products</h3>
-  <div id="productContainer" class="row g-4 mt-3">
-    <!-- Products will be dynamically injected here -->
+        </thead>
+        <tbody>
+          <?php while ($order = $ordersResult->fetch_assoc()): ?>
+            <tr>
+              <td><?= $order['id'] ?></td>
+              <td><?= date('M d, Y', strtotime($order['created_at'])) ?></td>
+              <td><?= htmlspecialchars($order['status']) ?></td>
+              <td>₱<?= number_format($order['total_amount'], 2) ?></td>
+            </tr>
+          <?php endwhile; ?>
+        </tbody>
+      </table>
+    <?php else: ?>
+      <p>You have no recent orders.</p>
+    <?php endif; ?>
   </div>
-  <div class="text-end mt-3">
-    <a href="../Public/shop.php" class="btn btn-primary">View More Products</a>
+
+
+  <div class="container mt-5">
+    <hr>
+    <h3>Available Products</h3>
+    <div id="productContainer" class="row g-4 mt-3">
+      <!-- Products will be dynamically injected here -->
+    </div>
+    <div class="text-end mt-3">
+      <a href="../Public/shop.php" class="btn btn-primary">View More Products</a>
+    </div>
   </div>
-</div>
 
-<script>
+  <script>
 
-document.addEventListener('DOMContentLoaded', () => {
-  fetch('../API/get_products.php')
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'success') {
-        const products = data.products;
-        const container = document.getElementById('productContainer');
+  document.addEventListener('DOMContentLoaded', () => {
+    fetch('../API/get_products.php')
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          const products = data.products;
+          const container = document.getElementById('productContainer');
 
-        if (products.length === 0) {
-          container.innerHTML = '<p>No products available.</p>';
-          return;
-        }
+          if (products.length === 0) {
+            container.innerHTML = '<p>No products available.</p>';
+            return;
+          }
 
-        // Display only first 5 products
-        products.slice(0, 5).forEach(product => {
-          const card = document.createElement('div');
-          card.className = 'col-md-4';
+          // Display only first 5 products
+          products.slice(0, 5).forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'col-md-4';
 
-          card.innerHTML = `
-            <div class="card h-100">
-              <img src="../${product.image_url}" class="card-img-top" alt="${product.name}" style="max-height: 200px; object-fit: contain;">
-              <div class="card-body">
-                <h5 class="card-title">${product.name}</h5>
-                <p class="card-text">${product.description}</p>
-                <p class="text-primary fw-bold">₱${Number(product.price).toLocaleString()}</p>
-                <button class="btn btn-sm btn-outline-primary">Add to Cart</button>
+            card.innerHTML = `
+              <div class="card h-100">
+                <img src="../${product.image_url}" class="card-img-top" alt="${product.name}" style="max-height: 200px; object-fit: contain;">
+                <div class="card-body">
+                  <h5 class="card-title">${product.name}</h5>
+                  <p class="card-text">${product.description}</p>
+                  <p class="text-primary fw-bold">₱${Number(product.price).toLocaleString()}</p>
+                  <button class="btn btn-sm btn-outline-primary">Add to Cart</button>
+                </div>
               </div>
-            </div>
-          `;
+            `;
 
-          container.appendChild(card);
-        });
-      } else {
-        console.error('Failed to load products');
-      }
-    })
-    .catch(error => {
-      console.error('Error fetching products:', error);
-    });
-});
-
+            container.appendChild(card);
+          });
+        } else {
+          console.error('Failed to load products');
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching products:', error);
+      });
+  });
 
 
-document.getElementById('logoutBtn').addEventListener('click', async () => {
-  await fetch('../API/logout.php', { method: 'POST' });
-  window.location.href = '../Public/login.php';
-});
-</script>
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await fetch('../API/logout.php', { method: 'POST' });
+    window.location.href = '../Public/login.php';
+  });
+  </script>
+    <script>
+        fetch('/API/get_cart_count.php')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('cartCount').innerText = data.count || 0;
+            })
+            .catch(err => console.error('Failed to fetch cart count:', err));
+    </script>
 
 </body>
 </html>
