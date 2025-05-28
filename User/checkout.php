@@ -1,92 +1,90 @@
 <?php
 session_start();
-require '../db.php';  // Your mysqli connection ($conn)
+require '../db.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_products'])) {
-    $selectedProducts = $_POST['selected_products'];
-    $products = [];
-
-    foreach ($selectedProducts as $productId) {
-        $query = "SELECT p.id, p.name, p.price FROM Products p WHERE p.id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param('i', $productId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($row = $result->fetch_assoc()) {
-            $products[] = $row;
-        }
-    }
-
-    header('Location: checkout.php'); // Redirect to thank you page after checkout
-} else {
-    header('Location: cart.php'); // Redirect if no products selected
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['latest_order_id'])) {
+    header("Location: ../User/cart.php");
+    exit;
 }
+
+$order_id = $_SESSION['latest_order_id'];
+$user_id = $_SESSION['user_id'];
+
+// Fetch order details
+$stmt = $conn->prepare("SELECT * FROM Orders WHERE id = ? AND user_id = ?");
+$stmt->bind_param("ii", $order_id, $user_id);
+$stmt->execute();
+$order = $stmt->get_result()->fetch_assoc();
+
+if (!$order) {
+    echo "Order not found.";
+    exit;
+}
+
+// Fetch order items
+$stmt = $conn->prepare("
+    SELECT oi.*, p.name 
+    FROM Order_items oi 
+    JOIN Products p ON oi.product_id = p.id 
+    WHERE oi.order_id = ?
+");
+$stmt->bind_param("i", $order_id);
+$stmt->execute();
+$items = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout</title>
+    <title>Order Confirmation</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/shop_styles.css">
+    <script>
+      function confirmCancel() {
+        return confirm("Are you sure you want to cancel this order?");
+      }
+    </script>
 </head>
-<body>
+<body class="container mt-5">
+    <h2>Order Confirmation</h2>
+    <p><strong>Order ID:</strong> <?= $order['id'] ?></p>
+    <p><strong>Total:</strong> ₱<?= number_format($order['total_amount'], 2) ?></p>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">TechNest</a>
-            <div class="d-flex gap-2 align-items-center">
-                <a href="../Public/shop.php" class="nav-link text-white me-2">Shop</a>
-                <a class="nav-link position-relative text-white" href="../User /cart.php">
-                    <i class="fas fa-shopping-cart me-1 bg-light"></i>
-                    <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" id="cartCount" style="font-size: 0.7rem;">0</span>
-                </a>
-                <a href="../User/my_orders.php" class="nav-link text-white me-2">Orders</a>
-                <a href="settings.php" class="nav-link text-white me-2">Settings</a>
-                <button class="btn btn-outline-light" id="logoutBtn">Logout</button>
-            </div>
-        </div>
-    </nav>
+    <h4>Items:</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Product</th><th>Price</th><th>Quantity</th><th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($items as $item): ?>
+            <tr>
+                <td><?= htmlspecialchars($item['name']) ?></td>
+                <td>₱<?= number_format($item['price'], 2) ?></td>
+                <td><?= $item['quantity'] ?></td>
+                <td>₱<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
 
-    <div class="container mt-5">
-        <h2 class="text-center">Checkout</h2>
-        <form action="process_checkout.php" method="POST">
-            <div class="row">
-                <div class="col-12">
-                    <h4>Your Selected Products</h4>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($products as $product): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($product['name']); ?></td>
-                                <td>$<?php echo number_format($product['price'], 2); ?></td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                    <div class="text-right">
-                        <button type="submit" class="btn btn-primary">Complete Purchase</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
+    <form method="POST" action="../API/confirm_payment.php" class="mr-2">
+        <input type="hidden" name="order_id" value="<?= $order_id ?>">
+        
+        <h4>Select Mode of Payment</h4>
+        <select class="form-control mb-3" name="payment_mode" required>
+            <option value="GCash">GCash</option>
+            <option value="Maya">Maya</option>
+            <option value="COD">Cash on Delivery (COD)</option>
+        </select>
 
-    <!-- Footer -->
-    <footer class="text-center mt-5">
-        <p>&copy; 2023 TechNest. All rights reserved.</p>
-    </footer>
+        <button type="submit" class="btn btn-success">Confirm Payment</button>
+    </form>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <form method="POST" action="../API/cancel_order.php" onsubmit="return confirmCancel();" class="mt-3">
+        <input type="hidden" name="order_id" value="<?= $order_id ?>">
+        <button type="submit" class="btn btn-danger">Cancel Order</button>
+    </form>
+
 </body>
 </html>

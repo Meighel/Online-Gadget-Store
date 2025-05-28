@@ -20,6 +20,7 @@ $userId = $_SESSION['user_id'] ?? null;
       <a href="shop.php" class="btn text-white">Shop</a>
       <?php if ($isLoggedIn): ?>
         <a href="../User/cart.php" class="btn text-white">Cart</a>
+        <a href="../User/my_orders.php" class="btn text-white">Orders</a>
         <button id="logoutBtn" class="btn btn-outline-light">Logout</button>
       <?php endif; ?>
     </div>

@@ -1,86 +1,197 @@
 <?php
 session_start();
-require '../db.php';  
-
-$user_id = $_SESSION['user_id'];
-$query = "SELECT p.id, p.name, p.price, c.quantity FROM Cart c JOIN Products p ON c.product_id = p.id WHERE c.user_id = ?";
-$stmt = $conn->prepare($query);
-$stmt->bind_param('i', $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$cartItems = [];
-while ($row = $result->fetch_assoc()) {
-    $cartItems[] = $row;
-}
+require '../db.php';
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/shop_styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/shop_styles.css">
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="client_dashboard.php">TechNest</a>
-            <div class="d-flex gap-2 align-items-center">
-                <a href="../Public/shop.php" class="nav-link text-white me-2">Shop</a>
-                <a href="../User /cart.php" class="nav-link text-white me-2">Cart</a>
-                <button class="btn btn-outline-light" id="logoutBtn">Logout</button>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container mt-5">
-        <h2 class="text-center">Your Shopping Cart</h2>
-        <a href="../Public/shop.php" class="btn btn-primary mb-4">Back to Shop</a>
-        <form id="checkoutForm" action="checkout.php" method="POST">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Select</th>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody id="cart-items">
-                    <?php 
-                    $totalPrice = 0; // Initialize total price
-                    foreach ($cartItems as $item): 
-                        $itemTotal = $item['price'] * $item['quantity'];
-                        $totalPrice += $itemTotal; // Accumulate total price
-                    ?>
-                    <tr id="item-<?php echo $item['id']; ?>">
-                        <td><input type="checkbox" name="selected_products[]" value="<?php echo $item['id']; ?>"></td>
-                        <td><?php echo htmlspecialchars($item['name']); ?></td>
-                        <td>$<?php echo number_format($item['price'], 2); ?></td>
-                        <td>
-                            <input type="number" value="<?php echo $item['quantity']; ?>" min="1" class="form-control" onchange="updateQuantity(<?php echo $item['id']; ?>, this.value)">
-                        </td>
-                        <td class="item-total" data-price="<?php echo $item['price']; ?>">$<?php echo number_format($itemTotal, 2); ?></td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-            <div class="text-right">
-                <h4>Total: <span id="total-price">$<?php echo number_format($totalPrice, 2); ?></span></h4>
-                <button type="submit" class="btn btn-primary" id="checkout-btn">Proceed to Checkout</button>
-            </div>
-        </form>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="client_dashboard.php">TechNest</a>
+      <div class="d-flex gap-2 align-items-center">
+        <a href="../Public/shop.php" class="nav-link text-white me-2">Shop</a>
+        <a href="../User/cart.php" class="nav-link text-white me-2">Cart</a>
+        <a href="../User/my_orders.php" class="nav-link text-white me-2">Orders</a>
+        <button class="btn btn-outline-light" id="logoutBtn">Logout</button>
+      </div>
     </div>
+  </nav>
 
-    <footer class="text-center mt-5">
-        <p>&copy; 2023 TechNest. All rights reserved.</p>
-    </footer>
+  <div class="container mt-5">
+    <h2 class="text-center">Your Shopping Cart</h2>
+    <a href="../Public/shop.php" class="btn btn-primary mb-4">Back to Shop</a>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="cart.js"></script>
+    <form id="checkoutForm" action="checkout.php" method="POST">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Select</th>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="cart-items">
+          <tr><td colspan="6" class="text-center">Loading cart...</td></tr>
+        </tbody>
+      </table>
+
+      <div class="text-right">
+        <h4>Total: <span id="total-price">₱0.00</span></h4>
+        <button type="submit" class="btn btn-primary" id="checkout-btn">Proceed to Checkout</button>
+      </div>
+    </form>
+  </div>
+
+  <footer class="text-center mt-5">
+    <p>&copy; 2023 TechNest. All rights reserved.</p>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script>
+    function formatPrice(num) {
+      return '₱' + Number(num).toLocaleString(undefined, { minimumFractionDigits: 2 });
+    }
+
+    function loadCart() {
+      $.getJSON('../API/get_cart.php', function (res) {
+        if (res.status !== 'success') {
+          $('#cart-items').html('<tr><td colspan="6">Failed to load cart.</td></tr>');
+          return;
+        }
+
+        let rows = '';
+        res.cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+
+        rows += `
+            <tr id="item-${item.id}">
+            <td><input type="checkbox" class="product-checkbox" name="selected_products[]" value="${item.id}" data-price="${item.price}" data-quantity="${item.quantity}"></td>
+            <td>${item.name}</td>
+            <td>${formatPrice(item.price)}</td>
+            <td>
+                <input type="number" min="1" value="${item.quantity}" class="form-control quantity-input" data-id="${item.id}" data-price="${item.price}">
+            </td>
+            <td class="item-total">${formatPrice(itemTotal)}</td>
+            <td>
+                <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="${item.id}">Delete</button>
+            </td>
+            </tr>
+        `;
+        });
+
+        $('#cart-items').html(rows);
+        recalculateTotals(); // ✅ Only count selected items
+
+      });
+    }
+
+    function recalculateTotals() {
+      let total = 0;
+      $('#cart-items tr').each(function () {
+        const row = $(this);
+        const price = parseFloat(row.find('.quantity-input').data('price'));
+        const quantity = parseInt(row.find('.quantity-input').val());
+        const itemTotal = price * quantity;
+
+        row.find('.item-total').text(formatPrice(itemTotal));
+        if (row.find('.product-checkbox').is(':checked')) {
+          total += itemTotal;
+        }
+      });
+      $('#total-price').text(formatPrice(total));
+    }
+
+    $(document).ready(function () {
+      loadCart();
+
+      $(document).on('change', '.product-checkbox, .quantity-input', recalculateTotals);
+
+      $(document).on('click', '.delete-btn', function () {
+        const id = $(this).data('id');
+
+        $.ajax({
+            url: '../API/delete_cart_item.php',
+            type: 'POST',
+            data: JSON.stringify({ product_id: id }),
+            contentType: 'application/json', // crucial
+            dataType: 'json',
+            success: function (res) {
+                if (res.status === 'success') {
+                $(`#item-${id}`).remove();
+                recalculateTotals();
+                } else {
+                alert('Delete failed.');
+                }
+            },
+            error: function () {
+                alert('Error communicating with server.');
+            }
+        });
+
+      });
+
+      $('#checkoutForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const selectedItems = [];
+        let total = 0;
+
+        $('.product-checkbox:checked').each(function () {
+          const row = $(this).closest('tr');
+          const id = $(this).val();
+          const quantity = row.find('.quantity-input').val();
+          const price = parseFloat($(this).data('price'));
+          const itemTotal = price * quantity;
+
+          total += itemTotal;
+
+          selectedItems.push({
+            id: id,
+            quantity: quantity,
+            price: price
+          });
+        });
+
+        if (selectedItems.length === 0) {
+          alert('Please select at least one product to checkout.');
+          return;
+        }
+
+        $.ajax({
+          url: '../API/create_order.php',
+          type: 'POST',
+          data: JSON.stringify({ items: selectedItems, total_amount: total }),
+          contentType: 'application/json',
+          dataType: 'json',
+          success: function (response) {
+            if (response.status === 'success') {
+              window.location.href = '../User/checkout.php';
+            } else {
+              alert('Order creation failed.');
+            }
+          },
+          error: function () {
+            alert('Server error during checkout.');
+          }
+        });
+      });
+      document.getElementById('logoutBtn').addEventListener('click', async () => {
+        await fetch('../API/logout.php', { method: 'POST' });
+        window.location.href = '../Public/login.php';
+        });
+    });
+  </script>
 </body>
 </html>

@@ -1,97 +1,67 @@
-// Sample cart data (this should be fetched from the server)
-const cartItems = [
-    { id: 1, name: "Product 1", price: 29.99, quantity: 2 },
-    { id: 2, name: "Product 2", price: 19.99, quantity: 1 },
-    { id: 3, name: "Product 3", price: 39.99, quantity: 1 },
-];
+document.addEventListener('DOMContentLoaded', () => {
 
-// Function to render cart items
-function renderCartItems() {
-    const cartItemsContainer = document.getElementById('cart-items');
-    cartItemsContainer.innerHTML = ''; // Clear existing items
-    let totalPrice = 0;
-
-    cartItems.forEach(item => {
-        const total = item.price * item.quantity;
-        totalPrice += total;
-
-        const row = `
-            <tr id="item-${item.id}">
-                <td>${item.name}</td>
-                <td>$${item.price.toFixed(2)}</td>
-                <td>
-                    <input type="number" value="${item.quantity}" min="1" class="form-control" onchange="updateQuantity(${item.id}, this.value)">
-                </td>
-                <td class="item-total" data-price="${item.price}">$${total.toFixed(2)}</td>
-                <td><button class="btn btn-danger" onclick="removeItem(${item.id})">Remove</button></td>
-            </tr>
-        `;
-        cartItemsContainer.innerHTML += row;
-    });
-
-    document.getElementById('total-price').innerText = `$${totalPrice.toFixed(2)}`;
-}
-
-// Function to update quantity// Function to update quantity
-async function updateQuantity(productId, quantity) {
-    if (quantity < 1) {
-        alert("Quantity must be at least 1.");
-        return;
+    function recalculateTotal() {
+      let total = 0;
+      document.querySelectorAll('.product-checkbox:checked').forEach(checkbox => {
+        const price = parseFloat(checkbox.dataset.price);
+        const quantity = parseInt(document.querySelector(`.quantity-input[data-product-id="${checkbox.value}"]`).value);
+        total += price * quantity;
+      });
+      document.getElementById('total-price').textContent = '₱' + total.toFixed(2);
     }
-    // Update the total price for this item
-    const itemRow = document.getElementById(`item-${productId}`);
-    const price = parseFloat(itemRow.querySelector('.item-total').dataset.price);
-    const newTotal = price * quantity;
-    itemRow.querySelector('.item-total').innerText = `$${newTotal.toFixed(2)}`;
-    // Recalculate the total price
-    calculateTotalPrice();
-}
-
-// Function to remove item
-// async function removeItem(productId) {
-//     if (confirm('Are you sure you want to remove this item from the cart?')) {
-//         try {
-//             const response = await fetch(`/API/delete_cart_item.php`, {
-//                 method: 'POST',
-//                 headers: {
-//                     'Content-Type': 'application/json'
-//                 },
-//                 body: JSON.stringify({ product_id: productId })
-//             });
-
-//             const result = await response.json();
-//             if (!result.success) {
-//                 alert(result.message);
-//             } else {
-//                 alert(`Product ${productId} removed from cart!`);
-//                 // Remove the item row from the table
-//                 const itemRow = document.getElementById(`item-${productId}`);
-//                 itemRow.remove();
-
-//                 // Remove the item from the cartItems array
-//                 const index = cartItems.findIndex(item => item.id === productId);
-//                 if (index > -1) {
-//                     cartItems.splice(index, 1); // Remove the item from the array
-//                 }
-
-//                 // Recalculate the total price
-//                 calculateTotalPrice();
-//             }
-//         } catch (error) {
-//             alert(`Error: ${error.message}`);
-//         }
-//     }
-// }
-
-// Function to calculate total price
-function calculateTotalPrice() {
-    const itemTotals = document.querySelectorAll('.item-total');
-    let total = 0;
-    itemTotals.forEach(item => {
-        total += parseFloat(item.innerText.replace('$', ''));
+  
+    // Update quantity in backend
+    document.querySelectorAll('.update-btn').forEach(button => {
+      button.addEventListener('click', async () => {
+        const productId = button.dataset.id;
+        const input = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
+        const newQty = parseInt(input.value);
+  
+        const response = await fetch('../API/update_cart.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ product_id: productId, quantity: newQty })
+        });
+  
+        const result = await response.json();
+        if (result.status === 'success') {
+          const price = parseFloat(input.dataset.price);
+          const totalCell = input.closest('tr').querySelector('.item-total');
+          totalCell.textContent = '₱' + (price * newQty).toFixed(2);
+          alert('Quantity updated');
+          recalculateTotal();
+        } else {
+          alert('Failed to update quantity');
+        }
+      });
     });
-    document.getElementById('total-price').innerText = `$${total.toFixed(2)}`;
-}
-
-// Initial render
-renderCartItems();
+  
+    // Delete from cart
+    document.querySelectorAll('.delete-btn').forEach(button => {
+      button.addEventListener('click', async () => {
+        const productId = button.dataset.id;
+  
+        const response = await fetch('../API/delete_cart_item.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ product_id: productId })
+        });
+  
+        const result = await response.json();
+        if (result.status === 'success') {
+          document.getElementById(`item-${productId}`).remove();
+          alert('Item deleted');
+          recalculateTotal();
+        } else {
+          alert('Failed to delete item');
+        }
+      });
+    });
+  
+    // Recalculate when checkbox or quantity changes
+    document.querySelectorAll('.product-checkbox, .quantity-input').forEach(el => {
+      el.addEventListener('change', recalculateTotal);
+    });
+  
+  });
+  

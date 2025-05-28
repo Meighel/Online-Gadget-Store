@@ -47,7 +47,8 @@ $productResult = $conn->query($productSql);
                   <i class="fas fa-shopping-cart me-1"></i>
                   <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" id="cartCount" style="font-size: 0.7rem;">0</span>
               </a>
-              <a href="settings.php" class="nav-link text-white me-2">Settings</a>
+              <a href="../User/my_orders.php" class="nav-link text-white me-2">Orders</a>
+              <a href="account_settings.php" class="nav-link text-white me-2">Settings</a>
               <button class="btn btn-outline-light" id="logoutBtn">Logout</button>
           </div>
       </div>
@@ -76,7 +77,7 @@ $productResult = $conn->query($productSql);
           <tr>
             <td><?= $order['id'] ?></td>
             <td><?= date('M d, Y', strtotime($order['created_at'])) ?></td>
-            <td><?= htmlspecialchars($order['status']) ?></td>
+            <td><?= $order['is_paid'] == 1 ? 'Paid' : 'Unpaid' ?></td>
             <td>₱<?= number_format($order['total_amount'], 2) ?></td>
           </tr>
         <?php endwhile; ?>
