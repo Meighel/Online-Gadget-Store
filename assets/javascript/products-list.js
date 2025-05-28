@@ -182,7 +182,7 @@ function openAddModal() {
 }
 
 function editProduct(id) {
-    const product = productsData.find(p => p.id === id);
+    const product = productsData.find(p => p.id == id);
     
     if (product) {
         $('#modalTitle').text('Edit Product');
