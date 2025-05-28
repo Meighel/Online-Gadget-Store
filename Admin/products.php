@@ -25,6 +25,31 @@
                 console.error('Error fetching name:', err);
             });
     </script>
+    <script>
+            function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                fetch('/../API/logout.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        window.location.href = '/../../index.php';
+                    } else {
+                        alert('Logout failed. Please try again.');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error during logout:', err);
+                    alert('An error occurred. Please try again.');
+                });
+            }
+        }
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -43,12 +68,10 @@
             <div class="header-actions">
                 <div class="notification-badge">
                     <i class="fas fa-bell"></i>
-                    <span class="badge-count">4</span>
                 </div>
                 
                 <div class="notification-badge">
                     <i class="fas fa-envelope"></i>
-                    <span class="badge-count">7</span>
                 </div>
                 
                 <div class="user-profile">
