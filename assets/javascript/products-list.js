@@ -159,7 +159,6 @@ function openAddModal() {
 }
 
 function editProduct(id) {
-    // Find product data from our stored data
     const product = productsData.find(p => p.id === id);
     
     if (product) {

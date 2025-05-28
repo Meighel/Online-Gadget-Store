@@ -65,17 +65,17 @@
                     <span>Product Management</span>
                 </a>
                 
-                <a href="admin/categories.php" class="sidebar-item">
+                <a href="categories.php" class="sidebar-item">
                     <i class="fas fa-tags"></i>
                     <span>Category Management</span>
                 </a>
                 
-                <a href="admin/users/list.php" class="sidebar-item">
+                <a href="users.php" class="sidebar-item">
                     <i class="fas fa-users"></i>
                     <span>User Management</span>
                 </a>
                 
-                <a href="admin/inventory.php" class="sidebar-item">
+                <a href="inventory.php" class="sidebar-item">
                     <i class="fas fa-warehouse"></i>
                     <span>Inventory Management</span>
                 </a>

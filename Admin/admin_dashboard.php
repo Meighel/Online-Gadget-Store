@@ -23,7 +23,7 @@
         <div class="header-content">
             <div class="logo">
                 <i class="fas fa-tachometer-alt"></i>
-                TechNest Admin
+                TechNest
             </div>
             
             <div class="search-container">
