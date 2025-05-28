@@ -36,12 +36,10 @@
             <div class="header-actions">
                 <div class="notification-badge">
                     <i class="fas fa-bell"></i>
-                    <span class="badge-count" id="notification-count">0</span>
                 </div>
                 
                 <div class="notification-badge">
                     <i class="fas fa-envelope"></i>
-                    <span class="badge-count" id="message-count">0</span>
                 </div>
                 
                 <div class="user-profile">
@@ -185,7 +183,7 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <p>&copy; 2025 TechNest Admin Dashboard.</p>
+        <p>&copy; 2025 TechNest Online Gadget Store.</p>
     </footer>
 
     <script>

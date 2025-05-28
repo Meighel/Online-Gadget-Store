@@ -89,7 +89,7 @@ function initializeDataTable(products) {
                 },
                 {
                     data: 'price',
-                    render: data => `<span class="price">$${parseFloat(data).toFixed(2)}</span>`
+                    render: data => `<span class="price">${parseFloat(data).toFixed(2)}</span>`
                 },
                 {
                     data: 'id',
@@ -97,10 +97,10 @@ function initializeDataTable(products) {
                     searchable: false,
                     render: id => `
                         <div class="action-buttons">
-                            <button class="btn btn-edit" onclick="editProduct(${id})">
+                            <button class="btn btn-edit" data-id="${id}">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
-                            <button class="btn btn-delete" onclick="deleteProduct(${id})">
+                            <button class="btn btn-delete" data-id="${id}">
                                 <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>`
@@ -131,9 +131,33 @@ function initializeDataTable(products) {
             },
             dom: 'lfrtip'
         });
+
+        // Add event delegation for edit and delete buttons
+        setupTableEventHandlers();
     } else {
         productsTable.clear().rows.add(products).draw();
     }
+}
+
+// Add event delegation function for table buttons
+function setupTableEventHandlers() {
+    // Remove any existing handlers to prevent duplicates
+    $(document).off('click', '.btn-edit');
+    $(document).off('click', '.btn-delete');
+    
+    // Use event delegation for edit buttons
+    $(document).on('click', '.btn-edit', function(e) {
+        e.preventDefault();
+        const id = parseInt($(this).data('id'));
+        editProduct(id);
+    });
+    
+    // Use event delegation for delete buttons  
+    $(document).on('click', '.btn-delete', function(e) {
+        e.preventDefault();
+        const id = parseInt($(this).data('id'));
+        deleteProduct(id);
+    });
 }
 
 function showError(message) {
@@ -174,7 +198,7 @@ function editProduct(id) {
 function deleteProduct(id) {
     if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
         // Show loading indicator
-        const deleteBtn = $(`.btn-delete[onclick="deleteProduct(${id})"]`);
+        const deleteBtn = $(`.btn-delete[data-id="${id}"]`);
         const originalText = deleteBtn.html();
         deleteBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Deleting...');
         
@@ -266,7 +290,7 @@ function saveProduct() {
     saveBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Saving...');
 
     // Determine if we're adding or updating
-    const url = formData.id ? '../API/manage-products/edit-product.php' : '../API/manage-products/add-product.php';
+    const url = formData.id ? '../API/manage-products/update-product.php' : '../API/manage-products/add-product.php';
     const action = formData.id ? 'updated' : 'added';
     
     $.ajax({
