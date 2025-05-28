@@ -43,16 +43,18 @@ function renderProducts(products) {
     }
 
     productGrid.innerHTML = products.map(product => `
-        <div class="product-card">
-            <img src="${product.image_url}" alt="${product.name}" class="product-image" />
-            <h5>${product.name}</h5>
-            <p>${product.category_name}</p>
-            <p>$${parseFloat(product.price).toFixed(2)}</p>
-            <p>Rating: ${product.rating}</p>
-            ${product.badge ? `<span class="badge bg-primary">${product.badge}</span>` : ''}
-            <p>${product.description}</p>
-            <button class="btn btn-sm btn-primary" onclick="addToCart(${product.id})">Add to Cart</button>
-        </div>
+        <a href="/Public/product.php?id=${product.id}" class="product-link">
+            <div class="product-card">
+                <img src="${product.image_url}" alt="${product.name}" class="product-image" />
+                <h5>${product.name}</h5>
+                <p>${product.category_name}</p>
+                <p>$${parseFloat(product.price).toFixed(2)}</p>
+                <p>Rating: ${product.rating}</p>
+                ${product.badge ? `<span class="badge bg-primary">${product.badge}</span>` : ''}
+                <p>${product.description}</p>
+                <button class="btn btn-sm btn-primary" onclick="event.preventDefault(); addToCart(${product.id});">Add to Cart</button>
+            </div>
+        </a>
     `).join('');
 }
 

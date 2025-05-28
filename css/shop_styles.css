@@ -137,21 +137,35 @@ body {
 
 /* Product Card */
 .product-card {
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  padding: 20px;
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.product-link {
+    text-decoration: none;     /* Remove underline */
+    color: inherit;            /* Inherit text color (not blue) */
+    display: block;
+}
+
+.product-link h5,
+.product-link p,
+.product-link span {
+    color: inherit;            /* Prevents blue links */
 }
 
 .product-image {
@@ -186,16 +200,19 @@ body {
 }
 
 /* Add to Cart Button */
-.product-card button {
-    margin-top: 15px;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 25px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.3s ease;
+.product-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  padding: 20px;
 }
 
 .product-card button:hover {

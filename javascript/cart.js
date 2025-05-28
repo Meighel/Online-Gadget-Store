@@ -32,81 +32,56 @@ function renderCartItems() {
     document.getElementById('total-price').innerText = `$${totalPrice.toFixed(2)}`;
 }
 
-// Function to update quantity
+// Function to update quantity// Function to update quantity
 async function updateQuantity(productId, quantity) {
     if (quantity < 1) {
         alert("Quantity must be at least 1.");
         return;
     }
-
-    try {
-        const response = await fetch(`/API/update_cart.php`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ product_id: productId, quantity: parseInt(quantity) })
-        });
-
-        const result = await response.json();
-        if (!result.success) {
-            alert(result.message);
-        } else {
-            // Update the total price for this item
-            const itemRow = document.getElementById(`item-${productId}`);
-            const price = parseFloat(itemRow.querySelector('.item-total').dataset.price);
-            const newTotal = price * quantity;
-            itemRow.querySelector('.item-total').innerText = `$${newTotal.toFixed(2)}`;
-
-            // Update the quantity in the cartItems array
-            const cartItem = cartItems.find(item => item.id === productId);
-            if (cartItem) {
-                cartItem.quantity = quantity; // Update the quantity in the array
-            }
-
-            // Recalculate the total price
-            calculateTotalPrice();
-        }
-    } catch (error) {
-        alert(`Error: ${error.message}`);
-    }
+    // Update the total price for this item
+    const itemRow = document.getElementById(`item-${productId}`);
+    const price = parseFloat(itemRow.querySelector('.item-total').dataset.price);
+    const newTotal = price * quantity;
+    itemRow.querySelector('.item-total').innerText = `$${newTotal.toFixed(2)}`;
+    // Recalculate the total price
+    calculateTotalPrice();
 }
 
 // Function to remove item
-async function removeItem(productId) {
-    if (confirm('Are you sure you want to remove this item from the cart?')) {
-        try {
-            const response = await fetch(`/API/delete_cart_item.php`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ product_id: productId })
-            });
+// async function removeItem(productId) {
+//     if (confirm('Are you sure you want to remove this item from the cart?')) {
+//         try {
+//             const response = await fetch(`/API/delete_cart_item.php`, {
+//                 method: 'POST',
+//                 headers: {
+//                     'Content-Type': 'application/json'
+//                 },
+//                 body: JSON.stringify({ product_id: productId })
+//             });
 
-            const result = await response.json();
-            if (!result.success) {
-                alert(result.message);
-            } else {
-                alert(`Product ${productId} removed from cart!`);
-                // Remove the item row from the table
-                const itemRow = document.getElementById(`item-${productId}`);
-                itemRow.remove();
+//             const result = await response.json();
+//             if (!result.success) {
+//                 alert(result.message);
+//             } else {
+//                 alert(`Product ${productId} removed from cart!`);
+//                 // Remove the item row from the table
+//                 const itemRow = document.getElementById(`item-${productId}`);
+//                 itemRow.remove();
 
-                // Remove the item from the cartItems array
-                const index = cartItems.findIndex(item => item.id === productId);
-                if (index > -1) {
-                    cartItems.splice(index, 1); // Remove the item from the array
-                }
+//                 // Remove the item from the cartItems array
+//                 const index = cartItems.findIndex(item => item.id === productId);
+//                 if (index > -1) {
+//                     cartItems.splice(index, 1); // Remove the item from the array
+//                 }
 
-                // Recalculate the total price
-                calculateTotalPrice();
-            }
-        } catch (error) {
-            alert(`Error: ${error.message}`);
-        }
-    }
-}
+//                 // Recalculate the total price
+//                 calculateTotalPrice();
+//             }
+//         } catch (error) {
+//             alert(`Error: ${error.message}`);
+//         }
+//     }
+// }
 
 // Function to calculate total price
 function calculateTotalPrice() {
