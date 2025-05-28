@@ -14,13 +14,16 @@ $userEmail = $_SESSION['user_email'];
 $userId = $_SESSION['user_id'];
 $userCreatedAt = $_SESSION['user_created_at'];
 
-
 // Fetch last 5 orders
 $sql = "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 5";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $userId);
 $stmt->execute();
 $ordersResult = $stmt->get_result();
+
+// Fetch up to 5 available products
+$productSql = "SELECT * FROM products LIMIT 5";
+$productResult = $conn->query($productSql);
 ?>
 
 <!DOCTYPE html>
@@ -84,12 +87,27 @@ $ordersResult = $stmt->get_result();
   <?php endif; ?>
 </div>
 
-
 <div class="container mt-5">
   <hr>
   <h3>Available Products</h3>
-  <div id="productContainer" class="row g-4 mt-3">
-    <!-- Products will be dynamically injected here -->
+  <div class="row g-4 mt-3">
+    <?php if ($productResult && $productResult->num_rows > 0): ?>
+      <?php while ($product = $productResult->fetch_assoc()): ?>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <img src="../<?= htmlspecialchars($product['image_url']) ?>" class="card-img-top" alt="<?= htmlspecialchars($product['name']) ?>" style="max-height: 200px; object-fit: contain;">
+            <div class="card-body">
+              <h5 class="card-title"><?= htmlspecialchars($product['name']) ?></h5>
+              <p class="card-text"><?= htmlspecialchars($product['description']) ?></p>
+              <p class="text-primary fw-bold">₱<?= number_format($product['price'], 2) ?></p>
+              <button class="btn btn-sm btn-outline-primary">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      <?php endwhile; ?>
+    <?php else: ?>
+      <p>No products available.</p>
+    <?php endif; ?>
   </div>
   <div class="text-end mt-3">
     <a href="../Public/shop.php" class="btn btn-primary">View More Products</a>
@@ -97,50 +115,6 @@ $ordersResult = $stmt->get_result();
 </div>
 
 <script>
-
-document.addEventListener('DOMContentLoaded', () => {
-  fetch('../API/get_products.php')
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'success') {
-        const products = data.products;
-        const container = document.getElementById('productContainer');
-
-        if (products.length === 0) {
-          container.innerHTML = '<p>No products available.</p>';
-          return;
-        }
-
-        // Display only first 5 products
-        products.slice(0, 5).forEach(product => {
-          const card = document.createElement('div');
-          card.className = 'col-md-4';
-
-          card.innerHTML = `
-            <div class="card h-100">
-              <img src="../${product.image_url}" class="card-img-top" alt="${product.name}" style="max-height: 200px; object-fit: contain;">
-              <div class="card-body">
-                <h5 class="card-title">${product.name}</h5>
-                <p class="card-text">${product.description}</p>
-                <p class="text-primary fw-bold">₱${Number(product.price).toLocaleString()}</p>
-                <button class="btn btn-sm btn-outline-primary">Add to Cart</button>
-              </div>
-            </div>
-          `;
-
-          container.appendChild(card);
-        });
-      } else {
-        console.error('Failed to load products');
-      }
-    })
-    .catch(error => {
-      console.error('Error fetching products:', error);
-    });
-});
-
-
-
 document.getElementById('logoutBtn').addEventListener('click', async () => {
   await fetch('../API/logout.php', { method: 'POST' });
   window.location.href = '../Public/login.php';
