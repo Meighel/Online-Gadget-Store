@@ -52,5 +52,19 @@ $processed_orders = $processed_stmt->get_result();
       <p>Order Date: <?= $order['created_at'] ?></p>
     </div>
   <?php endwhile; ?>
+
+  <script>
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch('../API/logout.php', { method: 'POST' });
+      window.location.href = '../Public/login.php';
+    });
+
+    fetch('/API/get_cart_count.php')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('cartCount').innerText = data.count || 0;
+            })
+            .catch(err => console.error('Failed to fetch cart count:', err));
+</script>
 </body>
 </html>

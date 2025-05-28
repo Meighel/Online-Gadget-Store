@@ -37,13 +37,15 @@ async function fetchProducts(action = 'all', param = '') {
 }
 
 function renderProducts(products) {
+    const isLoggedIn = window.isLoggedIn; // set from PHP in <script>
+
     if (!products || products.length === 0) {
         productGrid.innerHTML = '<p>No products found.</p>';
         return;
     }
 
-    productGrid.innerHTML = products.map(product => `
-        <a href="/Public/product.php?id=${product.id}" class="product-link">
+    productGrid.innerHTML = products.map(product => {
+        const productCardHTML = `
             <div class="product-card">
                 <img src="${product.image_url}" alt="${product.name}" class="product-image" />
                 <h5>${product.name}</h5>
@@ -52,12 +54,18 @@ function renderProducts(products) {
                 <p>Rating: ${product.rating}</p>
                 ${product.badge ? `<span class="badge bg-primary">${product.badge}</span>` : ''}
                 <p>${product.description}</p>
-                <button class="btn btn-sm btn-primary" onclick="event.preventDefault(); addToCart(${product.id});">Add to Cart</button>
+                ${isLoggedIn 
+                    ? `<button class="btn btn-sm btn-primary" onclick="event.preventDefault(); addToCart(${product.id});">Add to Cart</button>`
+                    : ''
+                }
             </div>
-        </a>
-    `).join('');
-}
+        `;
 
+        // Wrap the card in a clickable link to product or login depending on login status
+        const href = isLoggedIn ? `/Public/product.php?id=${product.id}` : `/Public/login.php`;
+        return `<a href="${href}" class="product-link">${productCardHTML}</a>`;
+    }).join('');
+}
 
 
 function searchProducts() {
@@ -79,7 +87,7 @@ async function addToCart(productId) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ product_id: productId, quantity: 1 }) // Default quantity to 1
+            body: JSON.stringify({ product_id: productId, quantity: 1 })
         });
 
         if (!response.ok) throw new Error('Failed to add to cart');
@@ -87,7 +95,7 @@ async function addToCart(productId) {
         const result = await response.json();
         if (result.success) {
             alert(`Product ${productId} added to cart!`);
-            updateCartCount(); // Update cart count
+            updateCartCount();
         } else {
             alert(result.message);
         }
@@ -96,7 +104,6 @@ async function addToCart(productId) {
     }
 }
 
-// Update function for Cart (NOT WORKING YET)
 async function updateCartCount() {
     try {
         const response = await fetch(`/API/get_cart.php`);
@@ -108,6 +115,4 @@ async function updateCartCount() {
     }
 }
 
-
-// Initial load
 fetchProducts('all');

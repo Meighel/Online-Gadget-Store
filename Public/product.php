@@ -33,9 +33,41 @@ $product = $result->fetch_assoc();
     <meta charset="UTF-8">
     <title><?= htmlspecialchars($product['name']) ?> - Product Details</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/product_styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/shop_styles.css">
 </head>
 <body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="../index.php">TechNest</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav align-items-center gap-2">
+                <li class="nav-item">
+                <a href="shop.php" class="nav-link text-white">Shop</a>
+                </li>
+
+                <li class="nav-item position-relative">
+                    <a class="nav-link text-white" href="../User/cart.php">
+                    <i class="fas fa-shopping-cart me-1"></i>
+                    <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" id="cartCount" style="font-size: 0.7rem;">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="settings.php" class="nav-link text-white">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <button class="btn btn-outline-light" id="logoutBtn">Logout</button>
+                </li>
+            </ul>
+            </div>
+        </div>
+    </nav>
+
     <div class="container mt-5">
         <a href="shop.php" class="btn btn-secondary mb-4">Back to Shop</a>
         <div class="row">
@@ -53,6 +85,8 @@ $product = $result->fetch_assoc();
     </div>
 
     <script>
+        const isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+        const userId = <?php echo isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'null'; ?>;
         async function addToCart(productId) {
             try {
                 const response = await fetch(`/API/add_to_cart.php`, {
