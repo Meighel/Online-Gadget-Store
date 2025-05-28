@@ -1,9 +1,17 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'staff') {
+    header("Location: ../Public/login.php");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Staff Dashboard</title>
     <link rel="stylesheet" href="../css/admin_dashboard.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -54,25 +62,19 @@
                 <div class="sidebar-title">Management</div>
                 
                 <!-- Product Management -->
-                <a href="admin/products.php" class="sidebar-item <?php echo ($current_page == 'products') ? 'active' : ''; ?>">
+                <a href="manage_products.php" class="sidebar-item <?php echo ($current_page == 'products') ? 'active' : ''; ?>">
                     <i class="fas fa-box"></i>
                     <span>Product Management</span>
                 </a>
                 
-                <!-- Category Management -->
-                <a href="admin/categories.php" class="sidebar-item <?php echo ($current_page == 'categories') ? 'active' : ''; ?>">
+                <!-- View Users -->
+                <a href="view_users.php" class="sidebar-item <?php echo ($current_page == 'Users') ? 'active' : ''; ?>">
                     <i class="fas fa-tags"></i>
-                    <span>Category Management</span>
-                </a>
-                
-                <!-- User Management -->
-                <a href="admin/users/list.php" class="sidebar-item <?php echo ($current_page == 'users-list') ? 'active' : ''; ?>">
-                    <i class="fas fa-users"></i>
-                    <span>User Management</span>
+                    <span>Users List</span>
                 </a>
                 
                 <!-- Inventory Management -->
-                <a href="admin/inventory.php" class="sidebar-item <?php echo ($current_page == 'inventory') ? 'active' : ''; ?>">
+                <a href="view_inventory.php" class="sidebar-item <?php echo ($current_page == 'inventory') ? 'active' : ''; ?>">
                     <i class="fas fa-warehouse"></i>
                     <span>Inventory Management</span>
                 </a>
@@ -191,7 +193,6 @@
         <p>&copy; 2025 TechNest Admin Dashboard.</p>
     </footer>
 
-    <script src="../javascript/admin-dashboard.js"></script>
     <script>
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             await fetch('../API/logout.php', { method: 'POST' });
