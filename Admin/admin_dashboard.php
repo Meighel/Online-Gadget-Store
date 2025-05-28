@@ -71,19 +71,19 @@
                 </a>
                 
                 <!-- Category Management -->
-                <a href="admin/categories.php" class="sidebar-item <?php echo ($current_page == 'categories') ? 'active' : ''; ?>">
+                <a href="categories.php" class="sidebar-item <?php echo ($current_page == 'categories') ? 'active' : ''; ?>">
                     <i class="fas fa-tags"></i>
                     <span>Category Management</span>
                 </a>
                 
                 <!-- User Management -->
-                <a href="admin/users/list.php" class="sidebar-item <?php echo ($current_page == 'users-list') ? 'active' : ''; ?>">
+                <a href="users.php" class="sidebar-item <?php echo ($current_page == 'users-list') ? 'active' : ''; ?>">
                     <i class="fas fa-users"></i>
                     <span>User Management</span>
                 </a>
                 
                 <!-- Inventory Management -->
-                <a href="admin/inventory.php" class="sidebar-item <?php echo ($current_page == 'inventory') ? 'active' : ''; ?>">
+                <a href="inventory.php" class="sidebar-item <?php echo ($current_page == 'inventory') ? 'active' : ''; ?>">
                     <i class="fas fa-warehouse"></i>
                     <span>Inventory Management</span>
                 </a>

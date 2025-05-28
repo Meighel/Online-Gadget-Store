@@ -136,7 +136,6 @@ function initializeDataTable(products) {
     }
 }
 
-
 function showError(message) {
     $('#table-content').html(`
         <div class="error-state">
@@ -174,14 +173,11 @@ function editProduct(id) {
 
 function deleteProduct(id) {
     if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
-        // For demo purposes, remove from local data
-        productsData = productsData.filter(product => product.id !== id);
+        // Show loading indicator
+        const deleteBtn = $(`.btn-delete[onclick="deleteProduct(${id})"]`);
+        const originalText = deleteBtn.html();
+        deleteBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Deleting...');
         
-        // Reinitialize the table with updated data
-        initializeDataTable(productsData);
-        
-        // In a real application, you would make an AJAX call to delete from the server
-        /*
         $.ajax({
             url: '../API/manage-products/delete-product.php',
             type: 'POST',
@@ -189,57 +185,89 @@ function deleteProduct(id) {
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
+                    // Show success message
+                    alert('Product deleted successfully!');
                     // Reload products after successful deletion
                     loadProducts();
                 } else {
                     alert('Failed to delete product: ' + (response.message || 'Unknown error'));
+                    // Restore button state
+                    deleteBtn.prop('disabled', false).html(originalText);
                 }
             },
             error: function(xhr, status, error) {
-                alert('Error deleting product: ' + error);
+                console.error('Delete Error:', {
+                    status: status,
+                    error: error,
+                    responseText: xhr.responseText
+                });
+                
+                let errorMessage = 'Error deleting product: ';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage += xhr.responseJSON.message;
+                } else {
+                    errorMessage += error;
+                }
+                
+                alert(errorMessage);
+                // Restore button state
+                deleteBtn.prop('disabled', false).html(originalText);
             }
         });
-        */
-        
-        alert('Product deleted successfully (demo only - no server call made)');
     }
 }
 
 function saveProduct() {
     const formData = {
         id: $('#productId').val(),
-        name: $('#productName').val(),
-        description: $('#productDescription').val(),
-        price: $('#productPrice').val(),
-        image_url: $('#productImage').val()
+        name: $('#productName').val().trim(),
+        description: $('#productDescription').val().trim(),
+        price: parseFloat($('#productPrice').val()),
+        image_url: $('#productImage').val().trim()
     };
 
-    // Simple client-side validation
-    if (!formData.name || !formData.description || !formData.price || !formData.image_url) {
-        alert('Please fill in all fields');
+    // Client-side validation
+    if (!formData.name) {
+        alert('Please enter a product name');
+        $('#productName').focus();
         return;
     }
 
-    // For demo purposes, update our local data
-    if (formData.id) {
-        // Edit existing product
-        const index = productsData.findIndex(p => p.id == formData.id);
-        if (index !== -1) {
-            productsData[index] = formData;
-        }
-    } else {
-        // Add new product - generate a new ID
-        formData.id = Math.max(...productsData.map(p => p.id)) + 1;
-        productsData.push(formData);
+    if (!formData.description) {
+        alert('Please enter a product description');
+        $('#productDescription').focus();
+        return;
     }
 
-    // Reinitialize the table with updated data
-    initializeDataTable(productsData);
-    closeModal();
-    
-    // In a real application, you would make an AJAX call to save to the server
-    /*
-    const url = formData.id ? '../API/manage-products/update-product.php' : '../API/manage-products/add-product.php';
+    if (!formData.price || formData.price <= 0) {
+        alert('Please enter a valid price greater than 0');
+        $('#productPrice').focus();
+        return;
+    }
+
+    if (!formData.image_url) {
+        alert('Please enter an image URL');
+        $('#productImage').focus();
+        return;
+    }
+
+    // Simple URL validation
+    try {
+        new URL(formData.image_url);
+    } catch (e) {
+        alert('Please enter a valid image URL');
+        $('#productImage').focus();
+        return;
+    }
+
+    // Show loading state
+    const saveBtn = $('.btn-primary');
+    const originalText = saveBtn.html();
+    saveBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+
+    // Determine if we're adding or updating
+    const url = formData.id ? '../API/manage-products/edit-product.php' : '../API/manage-products/add-product.php';
+    const action = formData.id ? 'updated' : 'added';
     
     $.ajax({
         url: url,
@@ -248,27 +276,42 @@ function saveProduct() {
         dataType: 'json',
         success: function(response) {
             if (response.status === 'success') {
+                alert(`Product ${action} successfully!`);
                 // Reload products after successful save
                 loadProducts();
                 closeModal();
             } else {
-                alert('Failed to save product: ' + (response.message || 'Unknown error'));
+                alert(`Failed to ${action.slice(0, -1)} product: ` + (response.message || 'Unknown error'));
             }
         },
         error: function(xhr, status, error) {
-            alert('Error saving product: ' + error);
+            console.error('Save Error:', {
+                status: status,
+                error: error,
+                responseText: xhr.responseText
+            });
+            
+            let errorMessage = `Error ${action.slice(0, -1)}ing product: `;
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage += xhr.responseJSON.message;
+            } else {
+                errorMessage += error;
+            }
+            
+            alert(errorMessage);
+        },
+        complete: function() {
+            // Restore button state
+            saveBtn.prop('disabled', false).html(originalText);
         }
     });
-    */
-    
-    alert('Product saved successfully (demo only - no server call made)');
 }
 
 function closeModal() {
     $('#productModal').fadeOut(300);
 }
 
-function logout() {t
+function logout() {
     window.location.href = '../logout.php';
 }
 
