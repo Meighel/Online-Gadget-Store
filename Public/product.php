@@ -48,7 +48,10 @@ $product = $result->fetch_assoc();
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav align-items-center gap-2">
                 <li class="nav-item">
-                <a href="shop.php" class="nav-link text-white">Shop</a>
+                <a href="../User/client_dashboard.php" class="nav-link text-white">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                <a href="../Public/shop.php" class="nav-link text-white">Shop</a>
                 </li>
 
                 <li class="nav-item position-relative">
@@ -58,7 +61,7 @@ $product = $result->fetch_assoc();
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="settings.php" class="nav-link text-white">Orders</a>
+                    <a href="../User/my_orders.php" class="nav-link text-white">Orders</a>
                 </li>
                 <li class="nav-item">
                     <button class="btn btn-outline-light" id="logoutBtn">Logout</button>
@@ -105,6 +108,19 @@ $product = $result->fetch_assoc();
                 alert("Error: " + err.message);
             }
         }
+    </script>
+    <script>
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        await fetch('../API/logout.php', { method: 'POST' });
+        window.location.href = '../Public/login.php';
+    });
+
+    fetch('/API/get_cart_count.php')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('cartCount').innerText = data.count || 0;
+                })
+                .catch(err => console.error('Failed to fetch cart count:', err));
     </script>
 </body>
 </html>

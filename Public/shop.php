@@ -83,10 +83,12 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
       <ul class="navbar-nav align-items-center gap-2">
         <li class="nav-item">
-          <a href="shop.php" class="nav-link text-white">Shop</a>
+          <a href="../User/client_dashboard.php" class="nav-link text-white">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a href="../Public/shop.php" class="nav-link text-white">Shop</a>
         </li>
 
-        <?php if ($isLoggedIn): ?>
           <li class="nav-item position-relative">
             <a class="nav-link text-white" href="../User/cart.php">
               <i class="fas fa-shopping-cart me-1"></i>
@@ -99,7 +101,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
           <li class="nav-item">
             <button class="btn btn-outline-light" id="logoutBtn">Logout</button>
           </li>
-        <?php endif; ?>
       </ul>
     </div>
   </div>
