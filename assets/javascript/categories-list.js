@@ -109,50 +109,71 @@ function openAddModal() {
 }
 
 function editCategory(id) {
-    const category = categoriesData.find(c => c.id === id);
+    const category = categoriesData.find(c => c.id == id);
     if (category) {
         $('#modalTitle').text('Edit Category');
         $('#categoryId').val(category.id);
         $('#categoryName').val(category.name);
-        $('#categoryDescription').val(category.description);
         $('#categoryModal').fadeIn(300);
     }
 }
 
 function deleteCategory(id) {
     if (confirm('Are you sure you want to delete this category?')) {
-        categoriesData = categoriesData.filter(c => c.id !== id);
-        initializeCategoryTable(categoriesData);
-        alert('Category deleted (demo only)');
+        $.ajax({
+            url: '../API/manage-categories/delete-category.php',
+            method: 'POST',
+            data: { id: id }, // send as form data, not JSON
+            success: function(response) {
+                if (response.status === 'success') {
+                    loadCategories(); // Re-fetch updated list
+                    alert('Category deleted');
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr) {
+                alert('Delete failed: ' + xhr.responseText);
+            }
+        });
     }
 }
+
+
 
 function saveCategory() {
     const formData = {
-        id: $('#categoryId').val(),
-        name: $('#categoryName').val(),
-        description: $('#categoryDescription').val()
+        name: $('#categoryName').val().trim()
     };
 
-    if (!formData.name || !formData.description) {
-        alert('Please fill in all fields');
-        return;
+    const id = $('#categoryId').val();
+    if (id) {
+        formData.id = parseInt(id);
     }
 
-    if (formData.id) {
-        const index = categoriesData.findIndex(c => c.id == formData.id);
-        if (index !== -1) {
-            categoriesData[index] = formData;
+    const isUpdate = !!formData.id;
+
+    $.ajax({
+        url: isUpdate ? '../API/manage-categories/update-category.php' : '../API/manage-categories/add-category.php',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function(response) {
+            if (response.status === 'success') {
+                loadCategories(); // reload the list after add or update
+                closeModal();
+                alert('Category saved');
+            } else {
+                alert('Error: ' + response.message);
+            }
+        },
+        error: function(xhr) {
+            alert('Save failed: ' + xhr.responseText);
         }
-    } else {
-        formData.id = Math.max(...categoriesData.map(c => c.id)) + 1;
-        categoriesData.push(formData);
-    }
-
-    initializeCategoryTable(categoriesData);
-    closeModal();
-    alert('Category saved (demo only)');
+    });
 }
+
+
 
 function closeModal() {
     $('#categoryModal').fadeOut(300);
