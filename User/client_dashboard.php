@@ -99,7 +99,7 @@ $productResult = $conn->query($productSql);
               <td><?= $order['id'] ?></td>
               <td><?= date('M d, Y', strtotime($order['created_at'])) ?></td>
               <td><?= htmlspecialchars($order['status']) ?></td>
-              <td>₱<?= number_format($order['total_amount'], 2) ?></td>
+              <td>$<?= number_format($order['total_amount'], 2) ?></td>
             </tr>
           <?php endwhile; ?>
         </tbody>

@@ -72,7 +72,7 @@ require '../db.php';
       </table>
 
       <div class="text-right">
-        <h4>Total: <span id="total-price">₱0.00</span></h4>
+        <h4>Total: <span id="total-price">$0.00</span></h4>
         <button type="submit" class="btn btn-primary" id="checkout-btn">Proceed to Checkout</button>
       </div>
     </form>
@@ -85,7 +85,7 @@ require '../db.php';
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script>
     function formatPrice(num) {
-      return '₱' + Number(num).toLocaleString(undefined, { minimumFractionDigits: 2 });
+      return '$' + Number(num).toLocaleString(undefined, { minimumFractionDigits: 2 });
     }
 
     function loadCart() {

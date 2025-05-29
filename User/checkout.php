@@ -38,53 +38,127 @@ $items = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 <head>
     <title>Order Confirmation</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/checkout.css">
     <script>
       function confirmCancel() {
         return confirm("Are you sure you want to cancel this order?");
       }
     </script>
 </head>
-<body class="container mt-5">
-    <h2>Order Confirmation</h2>
-    <p><strong>Order ID:</strong> <?= $order['id'] ?></p>
-    <p><strong>Total:</strong> ₱<?= number_format($order['total_amount'], 2) ?></p>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Order Confirmation</h1>
+            <p>Your order has been successfully placed!</p>
+        </div>
 
-    <h4>Items:</h4>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Product</th><th>Price</th><th>Quantity</th><th>Subtotal</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($items as $item): ?>
-            <tr>
-                <td><?= htmlspecialchars($item['name']) ?></td>
-                <td>₱<?= number_format($item['price'], 2) ?></td>
-                <td><?= $item['quantity'] ?></td>
-                <td>₱<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
+        <div class="content">
+            <div class="order-info">
+                <div class="info-card">
+                    <h3>Order ID</h3>
+                    <div class="value"><?php echo htmlspecialchars($order['id']); ?></div>
+                </div>
+                <div class="info-card">
+                    <h3>Total Amount</h3>
+                    <div class="value">₱<?php echo number_format($order['total'], 2); ?></div>
+                </div>
+                <div class="info-card">
+                    <h3>Order Date</h3>
+                    <div class="value"><?php echo date('M d, Y', strtotime($order['created_at'])); ?></div>
+                </div>
+                <div class="info-card">
+                    <h3>Status</h3>
+                    <div class="value"><?php echo ucfirst($order['status']); ?></div>
+                </div>
+            </div>
 
-    <form method="POST" action="../API/confirm_payment.php" class="mr-2">
-        <input type="hidden" name="order_id" value="<?= $order_id ?>">
-        
-        <h4>Select Mode of Payment</h4>
-        <select class="form-control mb-3" name="payment_mode" required>
-            <option value="GCash">GCash</option>
-            <option value="Maya">Maya</option>
-            <option value="COD">Cash on Delivery (COD)</option>
-        </select>
+            <div class="items-section">
+                <h2 class="section-title">Order Items</h2>
+                <div class="items-table">
+                    <div class="table-header">
+                        <div>Product</div>
+                        <div>Price</div>
+                        <div>Quantity</div>
+                        <div>Subtotal</div>
+                    </div>
+                    <?php foreach ($items as $item): ?>
+                    <div class="table-row">
+                        <div class="product-name" data-label="Product"><?php echo htmlspecialchars($item['name']); ?></div>
+                        <div class="price" data-label="Price">₱<?php echo number_format($item['price'], 2); ?></div>
+                        <div class="quantity" data-label="Quantity"><?php echo $item['quantity']; ?></div>
+                        <div class="subtotal" data-label="Subtotal">₱<?php echo number_format($item['price'] * $item['quantity'], 2); ?></div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
 
-        <button type="submit" class="btn btn-success">Confirm Payment</button>
-    </form>
+            <div class="payment-section">
+                <h2 class="section-title">Select Mode of Payment</h2>
+                <form id="paymentForm" method="POST" action="../API/confirm_payment.php">
+                    <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+                    
+                    <div class="payment-options">
+                        <div class="payment-option">
+                            <input type="radio" id="gcash" name="payment_method" value="gcash" required>
+                            <label for="gcash">
+                                <span>GCash</span>
+                            </label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" id="maya" name="payment_method" value="maya" required>
+                            <label for="maya">
+                                <span>Maya</span>
+                            </label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" id="cod" name="payment_method" value="cod" required>
+                            <label for="cod">
+                                <span>Cash on Delivery (COD)</span>
+                            </label>
+                        </div>
+                    </div>
 
-    <form method="POST" action="../API/cancel_order.php" onsubmit="return confirmCancel();" class="mt-3">
-        <input type="hidden" name="order_id" value="<?= $order_id ?>">
-        <button type="submit" class="btn btn-danger">Cancel Order</button>
-    </form>
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary" id="confirmBtn">
+                            Confirm Payment
+                        </button>
+                        <a href="cancel_order.php?id=<?php echo $order['id']; ?>" class="btn btn-secondary" 
+                           onclick="return confirm('Are you sure you want to cancel this order?')">
+                            Cancel Order
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        // Add loading state to confirm button
+        document.getElementById('paymentForm').addEventListener('submit', function() {
+            const confirmBtn = document.getElementById('confirmBtn');
+            confirmBtn.textContent = 'Processing...';
+            confirmBtn.classList.add('loading');
+        });
+
+        // Add success animation when payment option is selected
+        document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                this.closest('.payment-option').classList.add('success-animation');
+                setTimeout(() => {
+                    this.closest('.payment-option').classList.remove('success-animation');
+                }, 600);
+            });
+        });
+
+        // Smooth scroll to payment section when page loads
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.querySelector('.payment-section').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }, 500);
+        });
+    </script>
 </body>
 </html>
