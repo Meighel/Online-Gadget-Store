@@ -14,6 +14,73 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="../assets/javascript/users-list.js"></script>
+    
+    <style>
+        /* Role Badge Styles */
+        .role-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-admin {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .badge-staff {
+            background-color: #fd7e14;
+            color: white;
+        }
+        
+        .badge-client {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .badge-default {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        /* Loading and Error States */
+        .loading-state, .error-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+
+        .loading-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #007bff;
+        }
+
+        .error-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #dc3545;
+        }
+
+        /* Form validation styles */
+        .form-input:invalid {
+            border-color: #dc3545;
+        }
+
+        .form-input:valid {
+            border-color: #28a745;
+        }
+
+        /* Button loading state */
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+
     <script>
         // Load user name
         fetch('/../API/fetch_user_name.php')
@@ -142,7 +209,7 @@
             <div id="table-content">
                 <div class="loading-state">
                     <i class="fas fa-spinner fa-spin"></i>
-                    <h3>Loading Categories...</h3>
+                    <h3>Loading Users...</h3>
                     <p>Please wait while we fetch your users from the database.</p>
                 </div>
             </div>
@@ -161,23 +228,25 @@
                     <input type="hidden" id="userId" name="id">
 
                     <div class="form-group">
-                        <label class="form-label" for="userName">Name</label>
-                        <input type="text" id="userName" name="name" class="form-input" required>
+                        <label class="form-label" for="userName">Name <span style="color: red;">*</span></label>
+                        <input type="text" id="userName" name="name" class="form-input" required placeholder="Enter full name">
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="userEmail">Email</label>
-                        <input type="email" id="userEmail" name="email" class="form-input" required>
+                        <label class="form-label" for="userEmail">Email <span style="color: red;">*</span></label>
+                        <input type="email" id="userEmail" name="email" class="form-input" required placeholder="Enter email address">
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="userPassword">Password</label>
-                        <input type="password" id="userPassword" name="password" class="form-input" required>
+                        <label class="form-label" for="userPassword">Password <span style="color: red;">*</span></label>
+                        <input type="password" id="userPassword" name="password" class="form-input" required placeholder="Enter password">
+                        <small class="form-text">Leave blank when editing to keep current password</small>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="userRole">Role</label>
+                        <label class="form-label" for="userRole">Role <span style="color: red;">*</span></label>
                         <select id="userRole" name="role" class="form-input" required>
+                            <option value="">Select Role</option>
                             <option value="admin">Admin</option>
                             <option value="staff">Staff</option>
                             <option value="client">Client</option>
@@ -192,11 +261,9 @@
         </div>
     </div>
 
-
-
     <!-- Footer -->
     <footer class="footer">
-        <p>&copy; 2025 TechNest Admin Dashboard.</p>
+        <p>&copy; 2025 TechNest.</p>
     </footer>
 </body>
 </html>
