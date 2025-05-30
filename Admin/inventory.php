@@ -121,11 +121,6 @@
         </div>
         <div class="table-container">
             <div class="table-header">
-                <h2 class="table-title">Inventory Records</h2>
-                <button class="add-btn" onclick="openAddModal()">
-                    <i class="fas fa-plus"></i>
-                    Add Inventory Entry
-                </button>
             </div>
             <div id="table-content">
                 <div class="loading-state">
@@ -136,45 +131,6 @@
             </div>
         </div>
     </main>
-
-    <!-- Add/Edit Inventory Modal -->
-    <div id="inventoryModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">Add Inventory Entry</h3>
-                <button class="close" onclick="closeModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="inventoryForm">
-                    <input type="hidden" id="inventoryId" name="id">
-                    <div class="form-group">
-                        <label for="productId">Product ID</label>
-                        <input type="number" id="productId" name="product_id" class="form-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="userId">User ID</label>
-                        <input type="number" id="userId" name="user_id" class="form-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="orderId">Order ID</label>
-                        <input type="number" id="orderId" name="order_id" class="form-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="quantity">Quantity</label>
-                        <input type="number" id="quantity" name="quantity" class="form-input" min="1" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="price">Price at Purchase</label>
-                        <input type="number" id="price" name="price_at_purchase" class="form-input" step="0.01" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
-                <button class="btn-primary" onclick="saveInventory()">Save Entry</button>
-            </div>
-        </div>
-    </div>
 
     <!-- Footer -->
     <footer class="footer">

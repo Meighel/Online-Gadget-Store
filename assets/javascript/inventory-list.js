@@ -47,7 +47,6 @@ function initializeDataTable(items) {
                         <th>Category</th>
                         <th>Quantity</th>
                         <th>Location</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -61,18 +60,7 @@ function initializeDataTable(items) {
                 { data: 'name', render: data => `<span class="item-name">${data}</span>` },
                 { data: 'category' },
                 { data: 'quantity' },
-                { data: 'location' },
-                {
-                    data: 'id',
-                    orderable: false,
-                    searchable: false,
-                    render: id => `
-                        <div class="action-buttons">
-                            <button class="btn btn-edit" onclick="editItem(${id})"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="btn btn-delete" onclick="deleteItem(${id})"><i class="fas fa-trash"></i> Delete</button>
-                        </div>
-                    `
-                }
+                { data: 'location' }
             ],
             order: [[0, 'desc']],
             pageLength: 10,
@@ -101,77 +89,6 @@ function showError(message) {
         </div>
     `);
 }
-
-function openAddModal() {
-    $('#modalTitle').text('Add Inventory Item');
-    $('#inventoryForm')[0].reset();
-    $('#itemId').val('');
-    $('#inventoryModal').fadeIn(300);
-}
-
-function editItem(id) {
-    const item = inventoryData.find(i => i.id === id);
-    if (item) {
-        $('#modalTitle').text('Edit Inventory Item');
-        $('#itemId').val(item.id);
-        $('#itemName').val(item.name);
-        $('#itemCategory').val(item.category);
-        $('#itemQuantity').val(item.quantity);
-        $('#itemLocation').val(item.location);
-        $('#inventoryModal').fadeIn(300);
-    }
-}
-
-function deleteItem(id) {
-    if (confirm('Are you sure you want to delete this inventory item?')) {
-        inventoryData = inventoryData.filter(i => i.id !== id);
-        initializeDataTable(inventoryData);
-        alert('Item deleted (demo only - no server call)');
-    }
-}
-
-function saveItem() {
-    const formData = {
-        id: $('#itemId').val(),
-        name: $('#itemName').val(),
-        category: $('#itemCategory').val(),
-        quantity: $('#itemQuantity').val(),
-        location: $('#itemLocation').val()
-    };
-
-    if (!formData.name || !formData.category || !formData.quantity || !formData.location) {
-        alert('Please fill in all fields');
-        return;
-    }
-
-    if (formData.id) {
-        const index = inventoryData.findIndex(i => i.id == formData.id);
-        if (index !== -1) inventoryData[index] = formData;
-    } else {
-        formData.id = Math.max(...inventoryData.map(i => i.id), 0) + 1;
-        inventoryData.push(formData);
-    }
-
-    initializeDataTable(inventoryData);
-    closeModal();
-    alert('Item saved (demo only - no server call)');
-}
-
-function closeModal() {
-    $('#inventoryModal').fadeOut(300);
-}
-
-window.onclick = function(event) {
-    if (event.target === document.getElementById('inventoryModal')) closeModal();
-};
-
-$(document).keydown(function(e) {
-    if (e.key === 'Escape' && $('#inventoryModal').is(':visible')) closeModal();
-    if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-        e.preventDefault();
-        openAddModal();
-    }
-});
 
 function logout() {
     window.location.href = '../logout.php';
