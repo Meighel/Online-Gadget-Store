@@ -33,7 +33,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'staff') {
         <div class="header-content">
             <div class="logo">
                 <i class="fas fa-tachometer-alt"></i>
-                TechNest Staff
+                TechNest
             </div>
             
             <div class="search-container">
@@ -44,18 +44,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'staff') {
             <div class="header-actions">
                 <div class="notification-badge">
                     <i class="fas fa-bell"></i>
-                    <span class="badge-count">4</span>
                 </div>
                 
                 <div class="notification-badge">
                     <i class="fas fa-envelope"></i>
-                    <span class="badge-count">7</span>
                 </div>
                 
                 <div class="user-profile">
                     <span id="user-name">Loading...</span>
                 </div>
-
             </div>
         </div>
     </header>

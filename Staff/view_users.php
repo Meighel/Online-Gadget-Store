@@ -36,15 +36,18 @@
                 TechNest
             </div>
             
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for...">
+            </div>
+            
             <div class="header-actions">
                 <div class="notification-badge">
                     <i class="fas fa-bell"></i>
-                    <span class="badge-count">4</span>
                 </div>
                 
                 <div class="notification-badge">
                     <i class="fas fa-envelope"></i>
-                    <span class="badge-count">7</span>
                 </div>
                 
                 <div class="user-profile">

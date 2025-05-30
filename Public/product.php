@@ -39,38 +39,51 @@ $product = $result->fetch_assoc();
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="../index.php">TechNest</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul class="navbar-nav align-items-center gap-2">
-                <li class="nav-item">
-                <a href="../User/client_dashboard.php" class="nav-link text-white">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                <a href="../Public/shop.php" class="nav-link text-white">Shop</a>
-                </li>
-
-                <li class="nav-item position-relative">
-                    <a class="nav-link text-white" href="../User/cart.php">
-                    <i class="fas fa-shopping-cart me-1"></i>
-                    <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" id="cartCount" style="font-size: 0.7rem;">0</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../User/my_orders.php" class="nav-link text-white">Orders</a>
-                </li>
-                <li class="nav-item">
-                    <button class="btn btn-outline-light" id="logoutBtn">Logout</button>
-                </li>
-            </ul>
-            </div>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="../index.php">TechNest</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav align-items-center gap-2">
+            <?php if ($isLoggedIn): ?>
+            <li class="nav-item">
+            <a href="../User/client_dashboard.php" class="nav-link text-white">Dashboard</a>
+            </li>
+            <?php endif; ?>
+            <li class="nav-item">
+            <a href="shop.php" class="nav-link text-white">Shop</a>
+            </li>
+            <?php if ($isLoggedIn): ?>
+            <li class="nav-item position-relative">
+                <a class="nav-link text-white" href="../User/cart.php">
+                <i class="fas fa-shopping-cart me-1"></i>
+                <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" id="cartCount" style="font-size: 0.7rem;">0</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../User/my_orders.php" class="nav-link text-white">Orders</a>
+            </li>
+            <li class="nav-item">
+                <button class="btn btn-outline-light" id="logoutBtn">Logout</button>
+            </li>
+            <?php endif; ?>
+            <li class="nav-item">
+                <a class="nav-link" href="about.php">About</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="contact.php">Contact</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="login.php">Login</a>
+            </li>
+        </ul>
         </div>
-    </nav>
+    </div>
+  </nav>
+
 
     <div class="container mt-5">
         <a href="shop.php" class="btn btn-secondary mb-4">Back to Shop</a>
