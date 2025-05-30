@@ -25,17 +25,39 @@
             document.getElementById('user-name').textContent = `${data.name} (${data.role})`;
             
             // Optional: customize UI based on role
-            if (data.role === 'staff') {
-                console.log("Staff is logged in");
+            if (data.role === 'admin') {
+                console.log("Admin is logged in");
                 // Hide admin-only UI elements, etc.
             }
         })
         .catch(err => {
             console.error('Error fetching user info:', err);
         });
-
-        const currentUserRole = 'admin'; // or 'admin'
-
+    </script>
+    <script>
+            function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                fetch('/../API/logout.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        window.location.href = '/../../index.php';
+                    } else {
+                        alert('Logout failed. Please try again.');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error during logout:', err);
+                    alert('An error occurred. Please try again.');
+                });
+            }
+        }
     </script>
 </head>
 <body>
@@ -47,19 +69,22 @@
                 TechNest
             </div>
             
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for...">
+            </div>
+            
             <div class="header-actions">
                 <div class="notification-badge">
                     <i class="fas fa-bell"></i>
-                    <span class="badge-count">4</span>
                 </div>
                 
                 <div class="notification-badge">
                     <i class="fas fa-envelope"></i>
-                    <span class="badge-count">7</span>
                 </div>
                 
                 <div class="user-profile">
-                    <span id="user-name">Loading...</span>
+                    <span id="user-name">Admin</span>
                 </div>
             </div>
         </div>
@@ -101,7 +126,7 @@
         </div>
 
         <div class="sidebar-footer">
-            <div class="sidebar-item" id="logoutBtn">
+            <div class="sidebar-item" onclick="logout()">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </div>
@@ -112,7 +137,6 @@
     <main class="main-content">
         <div class="page-header">
             <h1 class="page-title">Category Management</h1>
-            <p class="page-subtitle">Manage your category inventory with ease</p>
         </div>
 
         <div class="table-container">
@@ -159,11 +183,9 @@
     </div>
 
 
-    <script>
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-        await fetch('../API/logout.php', { method: 'POST' });
-        window.location.href = '../Public/login.php';
-        });
-    </script>
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 TechNest Admin Dashboard.</p>
+    </footer>
 </body>
 </html>

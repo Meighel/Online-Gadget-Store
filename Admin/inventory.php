@@ -1,61 +1,93 @@
-<?php
-session_start();
-require '../db.php';
-
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-    header("Location: ../Public/login.php");
-    exit;
-}
-
-// Fetch inventory data with joins
-$query = "
-    SELECT 
-        Inventory.id,
-        Users.name AS user_name,
-        Products.name AS product_name,
-        Products.stocks AS current_stocks,
-        Inventory.quantity,
-        Inventory.price_at_purchase,
-        Inventory.order_id,
-        Inventory.purchased_at
-    FROM Inventory
-    JOIN Users ON Inventory.user_id = Users.id
-    JOIN Products ON Inventory.product_id = Products.id
-    ORDER BY Inventory.purchased_at DESC
-";
-$result = $conn->query($query);
-$inventory = $result->fetch_all(MYSQLI_ASSOC);
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventory Management</title>
+    <!-- CSS Files -->
     <link rel="stylesheet" href="../assets/css/admin_dashboard.css">
-    <link rel="stylesheet" href="../assets/css/admin-categories.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/admin-categories.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
+    <!-- JavaScript Files -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/javascript/inventory-list.js"></script>
+    <script>
+    fetch('../API/fetch_user_name.php')
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                console.error(data.error);
+                return;
+            }
+            document.getElementById('user-name').textContent = `${data.name} (${data.role})`;
+            
+            // Optional: customize UI based on role
+            if (data.role === 'admin') {
+                console.log("Admin is logged in");
+                // Hide admin-only UI elements, etc.
+            }
+        })
+        .catch(err => {
+            console.error('Error fetching user info:', err);
+        });
+    </script>
+    <script>
+            function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                fetch('/../API/logout.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        window.location.href = '/../../index.php';
+                    } else {
+                        alert('Logout failed. Please try again.');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error during logout:', err);
+                    alert('An error occurred. Please try again.');
+                });
+            }
+        }
+    </script>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="header-content">
-            <div class="logo"><i class="fas fa-tachometer-alt"></i> TechNest Admin</div>
+            <div class="logo">
+                <i class="fas fa-tachometer-alt"></i>
+                TechNest Admin
+            </div>
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for...">
+            </div>
             <div class="header-actions">
-                <div class="notification-badge"><i class="fas fa-bell"></i><span class="badge-count">4</span></div>
-                <div class="notification-badge"><i class="fas fa-envelope"></i><span class="badge-count">7</span></div>
-                <div class="user-profile"><span id="user-name">Loading...</span></div>
+                <div class="notification-badge">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="notification-badge">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="user-profile">
+                    <span id="user-name">Admin User</span>
+                </div>
             </div>
         </div>
     </header>
 
-     <!-- Sidebar -->
-     <aside id="sidebar" class="sidebar">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
         <div class="sidebar-content">
             <div class="sidebar-section">
                 <a href="admin_dashboard.php" class="sidebar-item">
@@ -84,7 +116,7 @@ $inventory = $result->fetch_all(MYSQLI_ASSOC);
             </div>
         </div>
         <div class="sidebar-footer">
-            <div class="sidebar-item" id="logoutBtn"">
+            <div class="sidebar-item" onclick="logout()">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </div>
@@ -94,67 +126,68 @@ $inventory = $result->fetch_all(MYSQLI_ASSOC);
     <!-- Main Content -->
     <main class="main-content">
         <div class="page-header">
-            <h1 class="page-title">Inventory</h1>
-            <p class="page-subtitle">View Inventory with ease</p>
+            <h1 class="page-title">Inventory Management</h1>
         </div>
         <div class="table-container">
             <div class="table-header">
                 <h2 class="table-title">Inventory Records</h2>
+                <button class="add-btn" onclick="openAddModal()">
+                    <i class="fas fa-plus"></i>
+                    Add Inventory Entry
+                </button>
             </div>
             <div id="table-content">
-                <table id="inventoryTable" class="display">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Buyer</th>
-                            <th>Product</th>
-                            <th>Quantity</th>
-                            <th>Price (₱)</th>
-                            <th>Order ID</th>
-                            <th>Current Stock</th>
-                            <th>Purchased At</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (count($inventory) === 0): ?>
-                            <tr><td colspan="8" class="text-center">No inventory logs found.</td></tr>
-                        <?php else: ?>
-                            <?php foreach ($inventory as $row): ?>
-                                <tr>
-                                    <td><?= $row['id'] ?></td>
-                                    <td><?= htmlspecialchars($row['user_name']) ?></td>
-                                    <td><?= htmlspecialchars($row['product_name']) ?></td>
-                                    <td><?= $row['quantity'] ?></td>
-                                    <td>₱<?= number_format($row['price_at_purchase'], 2) ?></td>
-                                    <td><?= $row['order_id'] ?></td>
-                                    <td><?= $row['current_stocks'] ?></td>
-                                    <td><?= $row['purchased_at'] ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <h3>Loading Inventory...</h3>
+                    <p>Please wait while we fetch your inventory from the database.</p>
+                </div>
             </div>
         </div>
     </main>
 
-    <script>
-        $(document).ready(function () {
-            $('#inventoryTable').DataTable();
-        });
+    <!-- Add/Edit Inventory Modal -->
+    <div id="inventoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Add Inventory Entry</h3>
+                <button class="close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="inventoryForm">
+                    <input type="hidden" id="inventoryId" name="id">
+                    <div class="form-group">
+                        <label for="productId">Product ID</label>
+                        <input type="number" id="productId" name="product_id" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userId">User ID</label>
+                        <input type="number" id="userId" name="user_id" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="orderId">Order ID</label>
+                        <input type="number" id="orderId" name="order_id" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" id="quantity" name="quantity" class="form-input" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price at Purchase</label>
+                        <input type="number" id="price" name="price_at_purchase" class="form-input" step="0.01" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn-primary" onclick="saveInventory()">Save Entry</button>
+            </div>
+        </div>
+    </div>
 
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-            await fetch('../API/logout.php', { method: 'POST' });
-            window.location.href = '../Public/login.php';
-        });
-
-        fetch('../API/fetch_user_name.php')
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) return console.error(data.error);
-                document.getElementById('user-name').textContent = `${data.name} (${data.role})`;
-            })
-            .catch(err => console.error('Error fetching user info:', err));
-    </script>
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 TechNest Admin Dashboard.</p>
+    </footer>
 </body>
 </html>

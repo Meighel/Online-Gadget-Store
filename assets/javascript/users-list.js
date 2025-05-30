@@ -51,7 +51,7 @@ function initializeDataTable(users) {
                         <th>Email</th>
                         <th>Role</th>
                         <th>Created At</th>
-                        ${currentUserRole === 'admin' ? '<th>Actions</th>' : ''}
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -64,9 +64,25 @@ function initializeDataTable(users) {
                 { data: 'id', render: data => `<span class="user-id">#${data}</span>` },
                 { data: 'name' },
                 { data: 'email' },
-                { data: 'role' },
-                { data: 'created_at' },
-                ...(currentUserRole === 'admin' ? [{
+                { 
+                    data: 'role', 
+                    render: data => {
+                        const roleColors = {
+                            'admin': 'badge-admin',
+                            'staff': 'badge-staff', 
+                            'client': 'badge-client'
+                        };
+                        return `<span class="role-badge ${roleColors[data] || 'badge-default'}">${data.charAt(0).toUpperCase() + data.slice(1)}</span>`;
+                    }
+                },
+                { 
+                    data: 'created_at',
+                    render: data => {
+                        const date = new Date(data);
+                        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                    }
+                },
+                {
                     data: 'id',
                     orderable: false,
                     searchable: false,
@@ -79,7 +95,7 @@ function initializeDataTable(users) {
                                 <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>`
-                }] : [])
+                }
             ],
             processing: true,
             pageLength: 10,
@@ -95,12 +111,6 @@ function initializeDataTable(users) {
             },
             dom: 'lfrtip'
         });
-
-        // Disable Ctrl+Shift+A shortcut for non-admins
-        if (currentUserRole !== 'admin') {
-            $(document).off('keydown'); // remove previous shortcut bindings
-        }
-
     } else {
         usersTable.clear().rows.add(users).draw();
     }
@@ -120,83 +130,167 @@ function showError(message) {
     `);
 }
 
-function openAddModal() {
-    if (currentUserRole !== 'admin') return alert("Only admins can add users.");
-    $('#modalTitle').text('Add User');
+// Fixed function name to match HTML onclick
+function addUserModal() {
+    $('#addUserModal').text('Add User');
     $('#userForm')[0].reset();
     $('#userId').val('');
+    $('#userPassword').prop('required', true);
     $('#userModal').fadeIn(300);
 }
 
 function editUser(id) {
-    if (currentUserRole !== 'admin') return alert("Only admins can edit users.");
-    const user = usersData.find(u => u.id === id);
+    const user = usersData.find(u => u.id == id);
     if (user) {
-        $('#modalTitle').text('Edit User');
+        $('#addUserModal').text('Edit User');
         $('#userId').val(user.id);
         $('#userName').val(user.name);
         $('#userEmail').val(user.email);
         $('#userRole').val(user.role);
+        $('#userPassword').val(''); // Clear password field
+        $('#userPassword').prop('required', false); // Password not required for edit
         $('#userModal').fadeIn(300);
     }
 }
 
 function deleteUser(id) {
-    if (currentUserRole !== 'admin') return alert("Only admins can delete users.");
-    if (confirm('Are you sure you want to delete this user?')) {
-        usersData = usersData.filter(user => user.id !== id);
-        initializeDataTable(usersData);
-        alert('User deleted successfully (demo only)');
+    const user = usersData.find(u => u.id == id);
+    if (!user) {
+        alert('User not found');
+        return;
+    }
+
+    if (confirm(`Are you sure you want to delete user "${user.name}"? This action cannot be undone.`)) {
+        // Show loading state
+        const deleteBtn = $(`.btn-delete[onclick="deleteUser(${id})"]`);
+        const originalText = deleteBtn.html();
+        deleteBtn.html('<i class="fas fa-spinner fa-spin"></i> Deleting...');
+        deleteBtn.prop('disabled', true);
+
+        $.ajax({
+            url: '../API/manage-users/delete-user.php',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ id: id }),
+            success: function(response) {
+                if (response.status === 'success') {
+                    alert('User deleted successfully!');
+                    loadUsers(); // Reload the table
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                let errorMessage = 'Failed to delete user. ';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage += xhr.responseJSON.message;
+                } else {
+                    errorMessage += 'Please try again.';
+                }
+                alert(errorMessage);
+            },
+            complete: function() {
+                // Restore button state
+                deleteBtn.html(originalText);
+                deleteBtn.prop('disabled', false);
+            }
+        });
     }
 }
 
 function saveUser() {
-    if (currentUserRole !== 'admin') return alert("Only admins can save users.");
     const formData = {
-        id: $('#userId').val(),
-        name: $('#userName').val(),
-        email: $('#userEmail').val(),
-        role: $('#userRole').val()
+        name: $('#userName').val().trim(),
+        email: $('#userEmail').val().trim(),
+        role: $('#userRole').val(),
+        password: $('#userPassword').val()
     };
 
+    const isEdit = $('#userId').val();
+    if (isEdit) {
+        formData.id = parseInt($('#userId').val());
+    }
+
+    // Validation
     if (!formData.name || !formData.email || !formData.role) {
-        alert('Please fill in all fields');
+        alert('Please fill in all required fields');
         return;
     }
 
-    if (formData.id) {
-        const index = usersData.findIndex(u => u.id == formData.id);
-        if (index !== -1) {
-            usersData[index] = formData;
-        }
-    } else {
-        formData.id = Math.max(...usersData.map(u => u.id)) + 1;
-        usersData.push(formData);
+    // For new users, password is required
+    if (!isEdit && !formData.password) {
+        alert('Password is required for new users');
+        return;
     }
 
-    initializeDataTable(usersData);
-    closeModal();
-    alert('User saved successfully (demo only)');
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+        alert('Please enter a valid email address');
+        return;
+    }
+
+    // Show loading state
+    const saveBtn = $('.btn-primary');
+    const originalText = saveBtn.text();
+    saveBtn.html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+    saveBtn.prop('disabled', true);
+
+    const apiUrl = isEdit ? '../API/manage-users/update-user.php' : '../API/manage-users/add-user.php';
+    const actionText = isEdit ? 'updated' : 'created';
+
+    $.ajax({
+        url: apiUrl,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function(response) {
+            if (response.status === 'success') {
+                alert(`User ${actionText} successfully!`);
+                closeUserModal();
+                loadUsers(); // Reload the table
+            } else {
+                alert('Error: ' + response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            let errorMessage = `Failed to ${isEdit ? 'update' : 'create'} user. `;
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage += xhr.responseJSON.message;
+            } else {
+                errorMessage += 'Please try again.';
+            }
+            alert(errorMessage);
+        },
+        complete: function() {
+            // Restore button state
+            saveBtn.text(originalText);
+            saveBtn.prop('disabled', false);
+        }
+    });
 }
 
-function closeModal() {
+function closeUserModal() {
     $('#userModal').fadeOut(300);
+    $('#userForm')[0].reset();
 }
 
+// Window click event to close modal
 window.onclick = function (event) {
     const modal = document.getElementById('userModal');
     if (event.target === modal) {
-        closeModal();
+        closeUserModal();
     }
 };
 
+// Keyboard shortcuts
 $(document).keydown(function (e) {
     if (e.key === 'Escape' && $('#userModal').is(':visible')) {
-        closeModal();
+        closeUserModal();
     }
 
     if (e.ctrlKey && e.shiftKey && e.key === 'A') {
         e.preventDefault();
-        openAddModal();
+        addUserModal();
     }
 });

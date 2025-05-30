@@ -89,7 +89,7 @@ $current_page = 'products';
                 </a>
             
                 
-                <a href="view_users.php" class="sidebar-item active">
+                <a href="view_users.php" class="sidebar-item">
                     <i class="fas fa-users"></i>
                     <span>Users List</span>
                 </a>
