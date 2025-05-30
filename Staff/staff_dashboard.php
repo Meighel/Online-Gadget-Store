@@ -83,7 +83,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'staff') {
                     <span>Users List</span>
                 </a>
 
-                <a href="view_inventory.php" class="sidebar-item ">
+                <a href="view_inventory.php" class="sidebar-item">
                     <i class="fas fa-warehouse"></i>
                     <span>Inventory Lists</span>
                 </a>

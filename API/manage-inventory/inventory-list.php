@@ -26,29 +26,22 @@ try {
         throw new Exception('Database connection failed: ' . $conn->connect_error);
     }
 
-    // Check if inventory table exists
-    $table_check = $conn->query("SHOW TABLES LIKE 'inventory'");
-    if ($table_check->num_rows == 0) {
-        throw new Exception('Inventory table does not exist');
-    }
-
-    // Check columns
-    $structure_check = $conn->query("DESCRIBE inventory");
-    $columns = [];
-    while ($row = $structure_check->fetch_assoc()) {
-        $columns[] = $row['Field'];
-    }
-
-    $required_columns = ['id', 'product_id', 'user_id', 'quantity', 'price_at_purchase', 'order_id', 'purchased_at'];
-    $missing_columns = array_diff($required_columns, $columns);
-
-    if (!empty($missing_columns)) {
-        throw new Exception('Missing columns in inventory table: ' . implode(', ', $missing_columns));
-    }
-
-    // Build SELECT query
-    $select_columns = ['id', 'product_id', 'user_id', 'quantity', 'price_at_purchase', 'order_id', 'purchased_at'];
-    $sql = "SELECT " . implode(', ', $select_columns) . " FROM inventory ORDER BY purchased_at DESC";
+    // Use the same query structure as your staff page but without unknown columns
+    $sql = "
+        SELECT 
+            Inventory.id,
+            Users.name AS user_name,
+            Products.name AS product_name,
+            Products.stocks AS current_stocks,
+            Inventory.quantity,
+            Inventory.price_at_purchase,
+            Inventory.order_id,
+            Inventory.purchased_at
+        FROM Inventory
+        JOIN Users ON Inventory.user_id = Users.id
+        JOIN Products ON Inventory.product_id = Products.id
+        ORDER BY Inventory.purchased_at DESC
+    ";
 
     $result = $conn->query($sql);
     if (!$result) {
@@ -57,18 +50,26 @@ try {
 
     $inventory = [];
     while ($row = $result->fetch_assoc()) {
-        $inventory[] = $row;
+        // Format data to match your inventory structure exactly
+        $inventory[] = [
+            'id' => (int)$row['id'],
+            'product_name' => $row['product_name'],
+            'user_name' => $row['user_name'],
+            'quantity' => (int)$row['quantity'],
+            'price_at_purchase' => (float)$row['price_at_purchase'],
+            'order_id' => (int)$row['order_id'],
+            'current_stocks' => (int)$row['current_stocks'],
+            'purchased_at' => $row['purchased_at']
+        ];
     }
 
+    // Return 'items' to match JavaScript expectation
     echo json_encode([
         'status' => 'success',
-        'inventory' => $inventory,
-        'debug_info' => [
-            'total_records' => count($inventory),
-            'available_columns' => $columns,
-            'query_used' => $sql
-        ]
+        'items' => $inventory,
+        'total' => count($inventory)
     ]);
+
 } catch (Exception $e) {
     echo json_encode([
         'status' => 'error',
