@@ -3,19 +3,16 @@
     --secondary-color: #a29bfe;
     --accent-color: #fd79a8;
     --dark-color: #2d3436;
-    --light-color: #ddd6fe;
-
-    --background-primary: var(--primary-color);
-    --background-secondary: var(--primary-color);
-    --card-background: var(--light-color);
-    --text-primary: white;
-    --text-muted: #e0e0e0;
-    --highlight: var(--accent-color);
-    --highlight-hover: #e84393;
-    --border-color: #bbb;
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --light-color: #f4f4f4;
+    --text-primary: #2d3436;
+    --text-light: #ffffff;
+    --background-primary: #ffffff;
+    --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    --gradient-accent: linear-gradient(135deg, var(--accent-color), #ff6b9d);
+    --card-shadow: 0 10px 30px rgba(108, 92, 231, 0.1);
+    --hover-shadow: 0 20px 40px rgba(108, 92, 231, 0.2);
+    --border-radius: 15px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Reset some default styles */
@@ -27,72 +24,88 @@
 
 html, body {
     height: 100%;
-    background-color: var(--background-primary);
+    background-color: var(--light-color);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--text-primary);
     line-height: 1.6;
 }
 
-/* Navbar */
+/* =====================
+   NAVBAR STYLES
+   ===================== */
 .navbar {
-  transition: all 0.4s ease-in-out;
-  padding: 15px 0px !important; 
-  background-color: var(--dark-color) !important;
+    background: var(--gradient-primary);
+    padding: 15px 20px;
+    transition: var(--transition);
+    color: var(--text-light);
 }
 
 .navbar.scrolled {
-  background-color: var(--background-primary) !important;
-  backdrop-filter: blur(5px);
-  box-shadow: var(--shadow-md);
+    background-color: var(--background-primary);
+    backdrop-filter: blur(5px);
+    box-shadow: var(--card-shadow);
 }
 
+/* Links */
 .navbar .nav-link {
-  color: var(--text-primary);
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  position: relative;
+    color: var(--text-light);
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0 10px;
+    transition: var(--transition);
+    position: relative;
+    text-decoration: none;
 }
 
 .navbar .nav-link:hover {
-  color: var(--highlight);
+    color: var(--accent-color);
 }
 
 .navbar .nav-link::after {
-  content: "";
-  display: block;
-  width: 0;
-  height: 1px;
-  background: var(--highlight);
-  transition: width 0.3s ease-in-out;
-  position: absolute;
-  bottom: -5px;
-  left: 50%;
-  transform: translateX(-50%);
+    content: "";
+    display: block;
+    width: 0;
+    height: 2px;
+    background: var(--highlight-color);
+    transition: width 0.3s ease-in-out;
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .navbar .nav-link:hover::after {
-  width: 50%;
+    width: 50%;
 }
 
+/* Toggler Button */
 .navbar-toggler {
-  border: none;
-  outline: none;
+    border: none;
+    background: transparent;
+    outline: none;
 }
 
 .navbar-toggler-icon {
-  filter: invert(1);
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='white' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/ %3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 30px;
+    height: 30px;
 }
 
+/* Buttons */
 .btn-warning {
-  background-color: var(--highlight);
-  border-color: var(--highlight);
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--text-light);
+    transition: var(--transition);
 }
 
 .btn-warning:hover {
-  background-color: var(--highlight-hover);
-  border-color: var(--highlight-hover);
+    background-color: #e84393; /* slightly darker version of accent */
+    border-color: #e84393;
 }
+
 
 /* Contact Section */
 .contact {

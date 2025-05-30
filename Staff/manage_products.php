@@ -23,24 +23,15 @@ $current_page = 'products';
     <link rel="stylesheet" href="../assets/css/staff_products.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script>
-    fetch('../API/fetch_user_name.php')
-        .then(res => res.json())
-        .then(data => {
-            if (data.error) {
-                console.error(data.error);
-                return;
-            }
-            document.getElementById('user-name').textContent = `${data.name} (${data.role})`;
-            
-            // Optional: customize UI based on role
-            if (data.role === 'admin') {
-                console.log("Admin is logged in");
-                // Hide admin-only UI elements, etc.
-            }
-        })
-        .catch(err => {
-            console.error('Error fetching user info:', err);
-        });
+        // Load user name
+        fetch('/../API/fetch_user_name.php')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('user-name').textContent = data.name;
+            })
+            .catch(err => {
+                console.error('Error fetching name:', err);
+            });
     </script>
 </head>
 <body>

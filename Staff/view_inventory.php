@@ -40,6 +40,17 @@ $inventory = $result->fetch_all(MYSQLI_ASSOC);
 
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+        <script>
+        // Load user name
+        fetch('/../API/fetch_user_name.php')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('user-name').textContent = data.name;
+            })
+            .catch(err => {
+                console.error('Error fetching name:', err);
+            });
+    </script>
 </head>
 <body>
     <!-- Header -->
