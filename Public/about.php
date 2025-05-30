@@ -31,7 +31,7 @@
                 <li class="nav-item"><a class="nav-link" href="User/client_dashboard.php">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link" href="User/cart.php">Cart</a></li>
                 <?php else: ?>
-                <li class="nav-item"><a class="nav-link" href="Public/login.php">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
                 <?php endif; ?>
             </ul>
             </div>
@@ -74,11 +74,8 @@
             </div>
             <div class="team-grid">
                 <div class="team-member">
-                    <div class="member-image">
-                        <img src="images/team/ken.jpg" alt="Ken Cinco">
-                    </div>
                     <div class="member-info">
-                        <h3 class="member-name">Ken Cinco</h3>
+                        <h3 class="member-name">Meighel Nicolle Padon</h3>
                         <div class="member-role">CEO & Founder</div>
                         <div class="social-links">
                             <a href="#"><i class="fab fa-linkedin"></i></a>
@@ -88,11 +85,8 @@
                     </div>
                 </div>
                 <div class="team-member">
-                    <div class="member-image">
-                        <img src="images/team/meighel.jpg" alt="Meighel Nicolle Padon">
-                    </div>
                     <div class="member-info">
-                        <h3 class="member-name">Meighel Nicolle Padon</h3>
+                        <h3 class="member-name">Ken Cinco</h3>
                         <div class="member-role">Chief Technology Officer</div>
                         <div class="social-links">
                             <a href="#"><i class="fab fa-linkedin"></i></a>
@@ -102,9 +96,6 @@
                     </div>
                 </div>
                 <div class="team-member">
-                    <div class="member-image">
-                        <img src="images/team/bea.jpg" alt="Frances Bea Magdayao">
-                    </div>
                     <div class="member-info">
                         <h3 class="member-name">Frances Bea Magdayao</h3>
                         <div class="member-role">Head of Product</div>
@@ -116,9 +107,6 @@
                     </div>
                 </div>
                 <div class="team-member">
-                    <div class="member-image">
-                        <img src="images/team/carla.jpg" alt="Carla Jane Lagan">
-                    </div>
                     <div class="member-info">
                         <h3 class="member-name">Carla Jane Lagan</h3>
                         <div class="member-role">Customer Experience Manager</div>

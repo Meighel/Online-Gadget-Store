@@ -353,20 +353,20 @@
     <div id="nav" class="collapse navbar-collapse">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link" href="Public/shop.php">Shop</a>
+          <a class="nav-link" href="shop.php">Shop</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="Public/about.php">About</a>
+          <a class="nav-link" href="about.php">About</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="Public/contact.php">Contact</a>
+          <a class="nav-link" href="contact.php">Contact</a>
         </li>
         <?php if (isset($_SESSION['user_id'])): ?>
           <li class="nav-item">
-            <a class="nav-link" href="User/client_dashboard.php">Dashboard</a>
+            <a class="nav-link" href="../User/client_dashboard.php">Dashboard</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="User/cart.php">Cart</a>
+            <a class="nav-link" href="../User/cart.php">Cart</a>
           </li>
         <?php else: ?>
           <li class="nav-item">
