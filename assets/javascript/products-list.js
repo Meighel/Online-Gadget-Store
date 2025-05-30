@@ -62,6 +62,8 @@ function initializeDataTable(products) {
                         <th>Name</th>
                         <th>Description</th>
                         <th>Price</th>
+                        <th>Category</th>
+                        <th>Stocks</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -85,11 +87,19 @@ function initializeDataTable(products) {
                 { data: 'name', render: data => `<span class="product-name">${data}</span>` },
                 {
                     data: 'description',
-                    render: data => `<span class="description" title="${data}">${data}</span>`
+                    render: data => `<span class="description" title="${data}">${data.substring(0, 50)}${data.length > 50 ? '...' : ''}</span>`
                 },
                 {
                     data: 'price',
-                    render: data => `<span class="price">${parseFloat(data).toFixed(2)}</span>`
+                    render: data => `<span class="price">$${parseFloat(data).toFixed(2)}</span>`
+                },
+                {
+                    data: 'category_name',
+                    render: data => `<span class="category">${data || 'Uncategorized'}</span>`
+                },
+                {
+                    data: 'stocks',
+                    render: data => `<span class="stocks ${data <= 0 ? 'out-of-stock' : ''}">${data}</span>`
                 },
                 {
                     data: 'id',
@@ -191,6 +201,13 @@ function editProduct(id) {
         $('#productDescription').val(product.description);
         $('#productPrice').val(product.price);
         $('#productImage').val(product.image_url);
+        $('#productStocks').val(product.stocks);
+        
+        // Load categories first, then set the selected value
+        fetchCategoriesForDropdown().then(() => {
+            $('#productCategory').val(product.category_id || '');
+        });
+        
         $('#productModal').fadeIn(300);
     }
 }
@@ -247,7 +264,9 @@ function saveProduct() {
         name: $('#productName').val().trim(),
         description: $('#productDescription').val().trim(),
         price: parseFloat($('#productPrice').val()),
-        image_url: $('#productImage').val().trim()
+        image_url: $('#productImage').val().trim(),
+        category_id: $('#productCategory').val() || null,
+        stocks: parseInt($('#productStocks').val()) || 0
     };
 
     // Client-side validation
@@ -272,6 +291,12 @@ function saveProduct() {
     if (!formData.image_url) {
         alert('Please enter an image URL');
         $('#productImage').focus();
+        return;
+    }
+
+    if (isNaN(formData.stocks) || formData.stocks < 0) {
+        alert('Please enter a valid stock quantity (0 or higher)');
+        $('#productStocks').focus();
         return;
     }
 
@@ -346,6 +371,56 @@ window.onclick = function(event) {
         closeModal();
     }
 };
+
+// Updated fetchCategoriesForDropdown function
+async function fetchCategoriesForDropdown() {
+    try {
+        const response = await fetch('../API/manage-products/get-categories.php');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Categories response:', data); // Debug log
+        
+        const select = $('#productCategory');
+        select.empty().append('<option value="">-- Select Category --</option>');
+        
+        if (data.status === 'success' && Array.isArray(data.categories)) {
+            if (data.categories.length > 0) {
+                data.categories.forEach(category => {
+                    select.append(`<option value="${category.id}">${category.name}</option>`);
+                });
+                console.log(`Successfully loaded ${data.categories.length} categories`);
+            } else {
+                select.append('<option value="" disabled>No categories available</option>');
+                console.log('No categories found in database');
+            }
+        } else {
+            throw new Error(data.message || 'Invalid response format');
+        }
+        
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+        const select = $('#productCategory');
+        select.empty()
+            .append('<option value="">-- Select Category --</option>')
+            .append('<option value="" disabled>Error loading categories</option>');
+        
+        // Show user-friendly error
+        alert('Failed to load categories. Please check console for details.');
+    }
+}
+
+// Call this in your openAddModal function:
+function openAddModal() {
+    $('#modalTitle').text('Add Product');
+    $('#productForm')[0].reset();
+    $('#productId').val('');
+    fetchCategoriesForDropdown(); // Load categories for dropdown
+    $('#productModal').fadeIn(300);
+}
 
 // Keyboard shortcuts
 $(document).keydown(function(e) {

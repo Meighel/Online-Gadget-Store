@@ -53,7 +53,7 @@
     <aside id="sidebar" class="sidebar">
         <div class="sidebar-content">
             <div class="sidebar-section">
-                <div class="sidebar-item <?php echo ($current_page == 'admin_dashboard' || $current_page == 'index') ? 'active' : ''; ?>">
+                <div class="sidebar-item active <?php echo ($current_page == 'admin_dashboard' || $current_page == 'index') ? 'active' : ''; ?>">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </div>

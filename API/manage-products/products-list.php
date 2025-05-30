@@ -36,20 +36,26 @@ try {
     }
     
     // Check if products table exists
-    $table_check = $conn->query("SHOW TABLES LIKE 'products'");
+    $table_check = $conn->query("SHOW TABLES LIKE 'Products'");
     if ($table_check->num_rows == 0) {
         throw new Exception('Products table does not exist');
     }
     
+    // Check if categories table exists
+    $categories_check = $conn->query("SHOW TABLES LIKE 'Categories'");
+    if ($categories_check->num_rows == 0) {
+        throw new Exception('Categories table does not exist');
+    }
+    
     // Check table structure
-    $structure_check = $conn->query("DESCRIBE products");
+    $structure_check = $conn->query("DESCRIBE Products");
     $columns = [];
     while ($row = $structure_check->fetch_assoc()) {
         $columns[] = $row['Field'];
     }
     
     // Check if required columns exist
-    $required_columns = ['id', 'name', 'description', 'price', 'image'];
+    $required_columns = ['id', 'name', 'description', 'price', 'image', 'category_id', 'stocks'];
     $missing_columns = [];
     foreach ($required_columns as $col) {
         if (!in_array($col, $columns)) {
@@ -61,25 +67,19 @@ try {
         throw new Exception('Missing columns in products table: ' . implode(', ', $missing_columns));
     }
     
-    // Build query based on available columns
-    $select_columns = ['id', 'name', 'description', 'price', 'image AS image_url'];
-    
-    // Add optional columns if they exist
-    if (in_array('category', $columns)) {
-        $select_columns[] = 'category';
-    }
-    if (in_array('stocks', $columns)) {
-        $select_columns[] = 'stocks';
-    }
-    
-    $sql = "SELECT " . implode(', ', $select_columns) . " FROM products";
-    
-    // Add ORDER BY if created_at column exists
-    if (in_array('created_at', $columns)) {
-        $sql .= " ORDER BY created_at DESC";
-    } else {
-        $sql .= " ORDER BY id DESC";
-    }
+    // Build the query with JOIN to get category name
+    $sql = "SELECT 
+                p.id, 
+                p.name, 
+                p.description, 
+                p.price, 
+                p.image AS image_url,
+                p.stocks,
+                p.category_id,
+                c.name AS category_name
+            FROM Products p
+            LEFT JOIN Categories c ON p.category_id = c.id
+            ORDER BY p.id DESC";
     
     $result = $conn->query($sql);
     
@@ -91,21 +91,39 @@ try {
     
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            $products[] = $row;
+            // Ensure all required fields are present in the response
+            $products[] = [
+                'id' => $row['id'],
+                'name' => $row['name'],
+                'description' => $row['description'],
+                'price' => $row['price'],
+                'image_url' => $row['image_url'],
+                'stocks' => $row['stocks'],
+                'category_id' => $row['category_id'],
+                'category_name' => $row['category_name']
+            ];
         }
     }
     
-    echo json_encode([
+    // Remove debug info from production response
+    $response = [
         'status' => 'success', 
-        'products' => $products,
-        'debug_info' => [
+        'products' => $products
+    ];
+    
+    // Add debug info only if in development
+    if (isset($_GET['debug'])) {
+        $response['debug_info'] = [
             'total_products' => count($products),
             'available_columns' => $columns,
             'query_used' => $sql
-        ]
-    ]);
+        ];
+    }
+    
+    echo json_encode($response);
     
 } catch (Exception $e) {
+    http_response_code(500);
     echo json_encode([
         'status' => 'error', 
         'message' => $e->getMessage(),

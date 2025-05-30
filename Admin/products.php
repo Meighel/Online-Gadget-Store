@@ -62,7 +62,8 @@
             
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search for...">
+                <!-- FIXED: Added id, name, and autocomplete attributes -->
+                <input type="text" id="admin-search" name="admin-search" class="search-input" placeholder="Search for..." autocomplete="off">
             </div>
             
             <div class="header-actions">
@@ -162,22 +163,42 @@
                     
                     <div class="form-group">
                         <label class="form-label" for="productName">Product Name</label>
-                        <input type="text" id="productName" name="name" class="form-input" required>
+                        <!-- FIXED: Added autocomplete attribute -->
+                        <input type="text" id="productName" name="name" class="form-input" autocomplete="off" required>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label" for="productDescription">Description</label>
-                        <textarea id="productDescription" name="description" class="form-input form-textarea" required></textarea>
+                        <!-- FIXED: Added autocomplete attribute with explicit form association -->
+                        <textarea id="productDescription" name="description" class="form-input form-textarea" autocomplete="off" form="productForm" required></textarea>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label" for="productPrice">Price ($)</label>
-                        <input type="number" id="productPrice" name="price" class="form-input" step="0.01" min="0" required>
+                        <!-- FIXED: Added autocomplete attribute -->
+                        <input type="number" id="productPrice" name="price" class="form-input" step="0.01" min="0" autocomplete="off" required>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label" for="productImage">Image URL</label>
-                        <input type="url" id="productImage" name="image_url" class="form-input" required>
+                        <!-- FIXED: Added autocomplete attribute -->
+                        <input type="url" id="productImage" name="image_url" class="form-input" autocomplete="url" required>
+                    </div>
+                    
+                    <!-- Add this new field for category -->
+                    <div class="form-group">
+                        <label class="form-label" for="productCategory">Category</label>
+                        <!-- FIXED: Added autocomplete attribute -->
+                        <select id="productCategory" name="category_id" class="form-input" autocomplete="off">
+                            <option value="">-- Select Category --</option>
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="productStocks">Stocks</label>
+                        <!-- FIXED: Added autocomplete attribute -->
+                        <input type="number" id="productStocks" name="stocks" class="form-input" min="0" autocomplete="off" required>
                     </div>
                 </form>
             </div>

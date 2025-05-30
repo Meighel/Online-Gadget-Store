@@ -511,3 +511,93 @@
     object-fit: cover;
     display: block;
 }
+
+/* Stock status styling */
+.stocks {
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.stocks.out-of-stock {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.stocks:not(.out-of-stock) {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+/* Add these CSS rules to fix modal scrolling */
+
+/* Make the modal overlay scrollable */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Enable scrolling */
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    padding: 20px 0; /* Add padding for breathing room */
+}
+
+/* Adjust modal content positioning */
+.modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: none;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    max-height: 90vh; /* Limit height to 90% of viewport */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Make modal body scrollable if content overflows */
+.modal-body {
+    padding: 20px;
+    overflow-y: auto; /* Enable vertical scrolling */
+    flex: 1; /* Take up available space */
+    max-height: calc(90vh - 120px); /* Account for header and footer */
+}
+
+/* Keep header and footer fixed */
+.modal-header {
+    padding: 20px 20px 0 20px;
+    border-bottom: 1px solid #eee;
+    flex-shrink: 0;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .modal {
+        padding: 10px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    .modal-body {
+        max-height: calc(95vh - 120px);
+    }
+}
