@@ -394,14 +394,14 @@
         <div class="stats-grid">
             <div class="stat-card earnings-monthly">
                 <div class="stat-label">Revenue (Monthly)</div>
-                <div class="stat-value">₱487,350</div>
+                <div class="stat-value">$487,350</div>
                 <div class="stat-change">+12.5% from last month</div>
                 <i class="fas fa-calendar stat-icon"></i>
             </div>
             
             <div class="stat-card earnings-annual">
                 <div class="stat-label">Revenue (Annual)</div>
-                <div class="stat-value">₱5,248,200</div>
+                <div class="stat-value">$5,248,200</div>
                 <div class="stat-change">+18.2% from last year</div>
                 <i class="fas fa-dollar-sign stat-icon"></i>
             </div>
@@ -454,7 +454,7 @@
                             <span class="item-detail">Juan Dela Cruz</span>
                         </div>
                         <div class="item-value">
-                            <span class="amount">₱15,750.00</span>
+                            <span class="amount">$15,750.00</span>
                             <span class="status paid">Paid</span>
                         </div>
                     </div>
@@ -464,7 +464,7 @@
                             <span class="item-detail">Maria Santos</span>
                         </div>
                         <div class="item-value">
-                            <span class="amount">₱8,990.00</span>
+                            <span class="amount">$8,990.00</span>
                             <span class="status pending">Pending</span>
                         </div>
                     </div>
@@ -474,7 +474,7 @@
                             <span class="item-detail">Carlos Rodriguez</span>
                         </div>
                         <div class="item-value">
-                            <span class="amount">₱22,450.00</span>
+                            <span class="amount">$22,450.00</span>
                             <span class="status paid">Paid</span>
                         </div>
                     </div>
@@ -484,7 +484,7 @@
                             <span class="item-detail">Ana Garcia</span>
                         </div>
                         <div class="item-value">
-                            <span class="amount">₱12,300.00</span>
+                            <span class="amount">$12,300.00</span>
                             <span class="status paid">Paid</span>
                         </div>
                     </div>
@@ -494,7 +494,7 @@
                             <span class="item-detail">Miguel Torres</span>
                         </div>
                         <div class="item-value">
-                            <span class="amount">₱6,850.00</span>
+                            <span class="amount">$6,850.00</span>
                             <span class="status pending">Pending</span>
                         </div>
                     </div>
@@ -513,7 +513,7 @@
                             <span class="item-detail">Stock: 45</span>
                         </div>
                         <div class="item-value">
-                            <span class="amount">₱89,990.00</span>
+                            <span class="amount">$89,990.00</span>
                             <span class="sales">127 sold</span>
                         </div>
                     </div>
@@ -523,7 +523,7 @@
                             <span class="item-detail">Stock: 32</span>
                         </div>
                         <div class="item-value">
-                            <span class="amount">₱79,990.00</span>
+                            <span class="amount">$79,990.00</span>
                             <span class="sales">89 sold</span>
                         </div>
                     </div>
@@ -533,7 +533,7 @@
                             <span class="item-detail">Stock: 18</span>
                         </div>
                         <div class="item-value">
-                            <span class="amount">₱79,990.00</span>
+                            <span class="amount">$79,990.00</span>
                             <span class="sales">76 sold</span>
                         </div>
                     </div>
@@ -543,7 +543,7 @@
                             <span class="item-detail">Stock: 156</span>
                         </div>
                         <div class="item-value">
-                            <span class="amount">₱14,990.00</span>
+                            <span class="amount">$14,990.00</span>
                             <span class="sales">234 sold</span>
                         </div>
                     </div>
@@ -553,7 +553,7 @@
                             <span class="item-detail">Stock: 28</span>
                         </div>
                         <div class="item-value">
-                            <span class="amount">₱69,990.00</span>
+                            <span class="amount">$69,990.00</span>
                             <span class="sales">54 sold</span>
                         </div>
                     </div>
@@ -599,11 +599,11 @@
                     fontSize: 16
                 },
                 axisY: {
-                    title: "Revenue (₱)",
-                    prefix: "₱",
+                    title: "Revenue ($)",
+                    prefix: "$",
                     gridColor: "#e8e8e8",
                     labelFormatter: function(e) {
-                        return "₱" + (e.value / 1000) + "K";
+                        return "$" + (e.value / 1000) + "K";
                     }
                 },
                 axisX: {
