@@ -10,7 +10,7 @@ function showLoading(show) {
 async function fetchProducts(action = 'all', param = '') {
     showLoading(true);
 
-    let url = `/Public/shop.php?ajax=1&action=${action}`;
+    let url = `../Public/shop.php?ajax=1&action=${action}`;
     if (param) {
         if (action === 'category') {
             url += `&category=${encodeURIComponent(param)}`;
@@ -43,7 +43,7 @@ function renderProducts(products) {
     }
 
     productGrid.innerHTML = products.map(product => `
-        <a href="/Public/product.php?id=${product.id}" class="product-link">
+        <a href="../Public/product.php?id=${product.id}" class="product-link">
             <div class="product-card">
                 <img src="${product.image_url}" alt="${product.name}" class="product-image" />
                 <h5>${product.name}</h5>
@@ -73,7 +73,7 @@ function searchProducts() {
 
 async function addToCart(productId) {
     try {
-        const response = await fetch(`/API/add_to_cart.php`, {
+        const response = await fetch(`../API/add_to_cart.php`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -97,7 +97,7 @@ async function addToCart(productId) {
 
 async function updateCartCount() {
     try {
-        const response = await fetch(`/API/get_cart.php`);
+        const response = await fetch(`../API/get_cart.php`);
         const cart = await response.json();
         const count = cart.items.reduce((total, item) => total + item.quantity, 0);
         document.getElementById('cartCount').innerText = count;

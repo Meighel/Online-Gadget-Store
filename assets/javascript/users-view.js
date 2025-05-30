@@ -51,7 +51,6 @@ function initializeDataTable(users) {
                         <th>Email</th>
                         <th>Role</th>
                         <th>Created At</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -81,20 +80,6 @@ function initializeDataTable(users) {
                         const date = new Date(data);
                         return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
                     }
-                },
-                {
-                    data: 'id',
-                    orderable: false,
-                    searchable: false,
-                    render: id => `
-                        <div class="action-buttons">
-                            <button class="btn btn-edit" onclick="editUser(${id})">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn btn-delete" onclick="deleteUser(${id})">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </div>`
                 }
             ],
             processing: true,

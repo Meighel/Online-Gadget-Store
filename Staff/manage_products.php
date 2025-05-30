@@ -75,7 +75,7 @@ $current_page = 'products';
             <div class="sidebar-section">
                 <div class="sidebar-title">Management</div>
                 
-                <a href="manage_products.php" class="sidebar-item">
+                <a href="manage_products.php" class="sidebar-item active">
                     <i class="fas fa-box"></i>
                     <span>Product Management</span>
                 </a>

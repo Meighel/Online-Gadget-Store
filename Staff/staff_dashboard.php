@@ -64,7 +64,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'staff') {
     <aside id="sidebar" class="sidebar">
         <div class="sidebar-content">
             <div class="sidebar-section">
-                <a href="staff_dashboard.php" class="sidebar-item">
+                <a href="staff_dashboard.php" class="sidebar-item active">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
@@ -83,7 +83,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'staff') {
                     <span>Users List</span>
                 </a>
 
-                <a href="view_inventory.php" class="sidebar-item active">
+                <a href="view_inventory.php" class="sidebar-item ">
                     <i class="fas fa-warehouse"></i>
                     <span>Inventory Lists</span>
                 </a>

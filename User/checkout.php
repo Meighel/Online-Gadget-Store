@@ -123,7 +123,7 @@ $items = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                         <button type="submit" class="btn btn-primary" id="confirmBtn">
                             Confirm Payment
                         </button>
-                        <a href="cancel_order.php?id=<?php echo $order['id']; ?>" class="btn btn-secondary" 
+                        <a href="../API/cancel_order.php?id=<?php echo $order['id']; ?>" class="btn btn-secondary" 
                            onclick="return confirm('Are you sure you want to cancel this order?')">
                             Cancel Order
                         </a>

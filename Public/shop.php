@@ -146,7 +146,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
     const isLoggedIn = <?php echo $isLoggedIn ? 'true' : 'false'; ?>;
     const userId = <?php echo $isLoggedIn ? $_SESSION['user_id'] : 'null'; ?>;
 </script>
-<script src="../javascript/shop.js"></script>
+<script src="../assets/javascript/shop.js"></script>
 <script>
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       await fetch('../API/logout.php', { method: 'POST' });
