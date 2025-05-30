@@ -74,24 +74,39 @@ function initializeDataTable(products) {
         productsTable = $('#productsTable').DataTable({
             data: products,
             columns: [
-                { data: 'id', render: data => `<span class="product-id">#${data}</span>` },
+                { 
+                    data: 'id', 
+                    render: data => `<span class="product-id">#${data || 'N/A'}</span>` 
+                },
                 {
                     data: 'image_url',
                     orderable: false,
                     searchable: false,
                     render: (data, type, row) => {
                         const url = data || 'https://via.placeholder.com/50x50?text=No+Image';
-                        return `<img src="${url}" alt="${row.name}" class="product-image" style="width:50px;height:50px;" onerror="this.src='https://via.placeholder.com/50x50?text=No+Image'">`;
+                        const name = row.name || 'Product';
+                        return `<img src="${url}" alt="${name}" class="product-image" style="width:50px;height:50px;" onerror="this.src='https://via.placeholder.com/50x50?text=No+Image'">`;
                     }
                 },
-                { data: 'name', render: data => `<span class="product-name">${data}</span>` },
+                { 
+                    data: 'name', 
+                    render: data => `<span class="product-name">${data || 'Unnamed Product'}</span>` 
+                },
                 {
                     data: 'description',
-                    render: data => `<span class="description" title="${data}">${data.substring(0, 50)}${data.length > 50 ? '...' : ''}</span>`
+                    render: data => {
+                        // Fix: Add null/undefined check
+                        const description = data || 'No description available';
+                        const truncated = description.length > 50 ? description.substring(0, 50) + '...' : description;
+                        return `<span class="description" title="${description}">${truncated}</span>`;
+                    }
                 },
                 {
                     data: 'price',
-                    render: data => `<span class="price">$${parseFloat(data).toFixed(2)}</span>`
+                    render: data => {
+                        const price = data ? parseFloat(data) : 0;
+                        return `<span class="price">$${price.toFixed(2)}</span>`;
+                    }
                 },
                 {
                     data: 'category_name',
@@ -99,7 +114,10 @@ function initializeDataTable(products) {
                 },
                 {
                     data: 'stocks',
-                    render: data => `<span class="stocks ${data <= 0 ? 'out-of-stock' : ''}">${data}</span>`
+                    render: data => {
+                        const stocks = data || 0;
+                        return `<span class="stocks ${stocks <= 0 ? 'out-of-stock' : ''}">${stocks}</span>`;
+                    }
                 },
                 {
                     data: 'id',
@@ -188,6 +206,7 @@ function openAddModal() {
     $('#modalTitle').text('Add Product');
     $('#productForm')[0].reset();
     $('#productId').val('');
+    fetchCategoriesForDropdown(); // Load categories for dropdown
     $('#productModal').fadeIn(300);
 }
 
@@ -197,11 +216,11 @@ function editProduct(id) {
     if (product) {
         $('#modalTitle').text('Edit Product');
         $('#productId').val(product.id);
-        $('#productName').val(product.name);
-        $('#productDescription').val(product.description);
-        $('#productPrice').val(product.price);
-        $('#productImage').val(product.image_url);
-        $('#productStocks').val(product.stocks);
+        $('#productName').val(product.name || '');
+        $('#productDescription').val(product.description || '');
+        $('#productPrice').val(product.price || '');
+        $('#productImage').val(product.image_url || '');
+        $('#productStocks').val(product.stocks || 0);
         
         // Load categories first, then set the selected value
         fetchCategoriesForDropdown().then(() => {
@@ -411,15 +430,6 @@ async function fetchCategoriesForDropdown() {
         // Show user-friendly error
         alert('Failed to load categories. Please check console for details.');
     }
-}
-
-// Call this in your openAddModal function:
-function openAddModal() {
-    $('#modalTitle').text('Add Product');
-    $('#productForm')[0].reset();
-    $('#productId').val('');
-    fetchCategoriesForDropdown(); // Load categories for dropdown
-    $('#productModal').fadeIn(300);
 }
 
 // Keyboard shortcuts
