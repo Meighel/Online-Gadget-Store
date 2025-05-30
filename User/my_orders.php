@@ -43,6 +43,7 @@ $processed_orders = $processed_stmt->get_result();
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/shop_styles.css">
   <link rel="stylesheet" href="../assets/css/orders.css">
+  <link rel="icon" href="../assets/images/favicon.png">
 </head>
 <body class="bg-light">
 

@@ -6,161 +6,45 @@
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="../assets/css/admin_dashboard.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="../assets/images/favicon.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.min.js"></script>
+    <script>
+        // Load user name
+        fetch('/../API/fetch_user_name.php')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('user-name').textContent = data.name;
+            })
+            .catch(err => {
+                console.error('Error fetching name:', err);
+            });
+    </script>
+    <script>
+            function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                fetch('/../API/logout.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        window.location.href = '/../../index.php';
+                    } else {
+                        alert('Logout failed. Please try again.');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error during logout:', err);
+                    alert('An error occurred. Please try again.');
+                });
+            }
+        }
+    </script>  
     <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f8f9fa;
-            color: #333;
-        }
-
-        .header {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            height: 70px;
-        }
-
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
-            height: 100%;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .search-container {
-            position: relative;
-            max-width: 400px;
-            flex: 1;
-            margin: 0 2rem;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.5rem;
-            border: 1px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 0.9rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #999;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .notification-badge {
-            position: relative;
-            padding: 0.5rem;
-            cursor: pointer;
-            border-radius: 50%;
-            transition: background 0.3s ease;
-        }
-
-        .notification-badge:hover {
-            background: #f0f0f0;
-        }
-
-        .user-profile {
-            font-weight: 500;
-            color: #333;
-        }
-
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 70px;
-            bottom: 0;
-            width: 260px;
-            background: white;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            z-index: 999;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem 0;
-        }
-
-        .sidebar-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .sidebar-title {
-            padding: 0 1.5rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
-        }
-
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1.5rem;
-            color: #666;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .sidebar-item:hover {
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-        }
-
-        .sidebar-item.active {
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-            border-right: 3px solid #667eea;
-        }
-
-        .sidebar-item i {
-            width: 20px;
-            margin-right: 0.75rem;
-            font-size: 1rem;
-        }
-
-        .sidebar-footer {
-            border-top: 1px solid #e0e0e0;
-            padding: 1rem 0;
-        }
-
         .main-content {
             margin-left: 260px;
             margin-top: 70px;
@@ -785,15 +669,6 @@
                     btn.style.background = '';
                 }, 2000);
             }, 2000);
-        }
-
-        // Logout function
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                alert('Logged out successfully!');
-                // In a real application, this would redirect to login page
-                // window.location.href = '/login.php';
-            }
         }
 
         // Initialize dashboard when page loads

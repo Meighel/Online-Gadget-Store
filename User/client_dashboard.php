@@ -36,6 +36,7 @@ $productResult = $conn->query($productSql);
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/shop_styles.css">
   <link rel="stylesheet" href="../assets/css/client_dashboard.css">
+  <link rel="icon" href="../assets/images/favicon.png">
 </head>
 <body>
 

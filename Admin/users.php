@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/admin-products.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="icon" href="../assets/images/favicon.png">
 
     <!-- JavaScript Files -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>

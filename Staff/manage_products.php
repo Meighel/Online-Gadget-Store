@@ -22,6 +22,7 @@ $current_page = 'products';
     <link rel="stylesheet" href="../assets/css/admin_dashboard.css">
     <link rel="stylesheet" href="../assets/css/staff_products.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="../assets/images/favicon.png">
     <script>
         // Load user name
         fetch('/../API/fetch_user_name.php')

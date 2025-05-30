@@ -29,7 +29,7 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['user_role'])) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
-  <link rel="icon" href="assets/images/icon.png">
+  <link rel="icon" href="assets/images/favicon.png">
 </head>
 <body>
 

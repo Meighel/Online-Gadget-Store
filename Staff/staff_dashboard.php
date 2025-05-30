@@ -14,6 +14,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'staff') {
     <title>Staff Dashboard</title>
     <link rel="stylesheet" href="../assets/css/admin_dashboard.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="../assets/images/favicon.png">
     <script>
         // Load user name
         fetch('/../API/fetch_user_name.php')

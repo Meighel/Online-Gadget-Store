@@ -39,6 +39,7 @@ $items = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     <title>Order Confirmation</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/checkout.css">
+    <link rel="icon" href="../assets/images/favicon.png">
     <script>
       function confirmCancel() {
         return confirm("Are you sure you want to cancel this order?");

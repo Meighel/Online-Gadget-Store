@@ -31,7 +31,7 @@ $user = $stmt->get_result()->fetch_assoc();
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/shop_styles.css">
-    
+    <link rel="icon" href="../assets/images/favicon.png">
     <style>
         :root {
             --primary-color: #6c5ce7;

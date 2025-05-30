@@ -10,6 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/about.css">
     <link rel="stylesheet" href="../assets/css/shop_styles.css">
+    <link rel="icon" href="../assets/images/favicon.png">
 </head>
 <body>
 
